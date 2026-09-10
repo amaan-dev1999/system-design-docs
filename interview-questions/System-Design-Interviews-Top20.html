@@ -1,0 +1,1333 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+  @page { size: Letter; margin: 16mm; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; font-size: 10.5pt; line-height: 1.5; color: #1a1a1a; }
+  h1 { font-size: 20pt; color: #14375a; border-bottom: 2px solid #14375a; padding-bottom: 5px; break-before: page; margin-top: 0; }
+  h1:first-of-type { break-before: avoid; }
+  h2 { font-size: 14pt; color: #1f4e79; margin-top: 16px; }
+  h3 { font-size: 11.5pt; color: #2e5f8a; margin-top: 12px; }
+  code { font-family: Consolas, monospace; background: #f2f2f2; padding: 1px 4px; border-radius: 3px; font-size: 9.5pt; }
+  pre { font-family: Consolas, monospace; background: #f6f8fa; border: 1px solid #e1e4e8; border-radius: 6px; padding: 10px; white-space: pre-wrap; font-size: 9pt; line-height: 1.35; overflow-wrap: anywhere; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 9.5pt; }
+  th, td { border: 1px solid #b0b0b0; padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: #14375a; color: #fff; }
+  blockquote { border-left: 4px solid #1f4e79; margin: 8px 0; padding: 6px 12px; background: #eef3f8; }
+  ul, ol { margin: 6px 0 6px 22px; }
+  li { margin: 2px 0; }
+  hr { border: none; border-top: 1px solid #ccc; margin: 14px 0; }
+  figure.diagram { text-align: center; margin: 14px 0; padding: 10px; border: 1px solid #e1e4e8; border-radius: 8px; background: #fafbfc; break-inside: avoid; }
+  figure.diagram svg { max-width: 100%; height: auto; }
+  figcaption { font-size: 8.5pt; color: #666; margin-top: 6px; font-style: italic; }
+  .cover { text-align: center; padding-top: 150px; break-after: page; }
+  .cover h1 { font-size: 30pt; border: none; break-before: avoid; }
+  .cover .sub { font-size: 14pt; color: #1f4e79; margin-top: 8px; }
+  .cover .desc { font-size: 10pt; color: #555; margin-top: 14px; }
+  .toc { break-after: page; }
+  .toc h2 { border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+  .toc a { color: #1f4e79; text-decoration: none; }
+  .toc li { margin: 4px 0; }
+</style></head><body><div class="cover"><h1>System Design Interviews</h1><div class="sub">Top 20 Questions — 7-Step Framework + AWS Well-Architected Review</div><div class="desc">Functional &amp; Non-Functional Requirements · Core Entities · API · High-Level Design · Deep Dives · Trade-offs · 6 AWS Pillars</div></div><nav class="toc"><h2>Table of Contents</h2><ul><li><a href="#system-design-interviews-top-20-questions">System Design Interviews — Top 20 Questions</a></li><li><a href="#part-a-questions-1-5">Part A — Questions 1–5</a></li><li><a href="#1-url-shortener-tinyurl-bitly">1. URL Shortener (TinyURL / Bitly)</a></li><li><a href="#2-pastebin">2. Pastebin</a></li><li><a href="#3-twitter-news-feed">3. Twitter / News Feed</a></li><li><a href="#4-instagram">4. Instagram</a></li><li><a href="#5-whatsapp-chat-system">5. WhatsApp / Chat System</a></li><li><a href="#part-b-questions-6-10">Part B — Questions 6–10</a></li><li><a href="#6-rate-limiter">6. Rate Limiter</a></li><li><a href="#7-youtube-netflix-video-streaming">7. YouTube / Netflix (Video Streaming)</a></li><li><a href="#8-web-crawler">8. Web Crawler</a></li><li><a href="#9-notification-system">9. Notification System</a></li><li><a href="#10-uber-ride-sharing">10. Uber / Ride-Sharing</a></li><li><a href="#part-c-questions-11-15">Part C — Questions 11–15</a></li><li><a href="#11-google-drive-dropbox-file-storage-sync">11. Google Drive / Dropbox (File Storage &amp; Sync)</a></li><li><a href="#12-ticketmaster-ticket-booking">12. Ticketmaster (Ticket Booking)</a></li><li><a href="#13-distributed-cache">13. Distributed Cache</a></li><li><a href="#14-search-autocomplete-typeahead">14. Search Autocomplete / Typeahead</a></li><li><a href="#15-google-maps-geospatial-routing">15. Google Maps (Geospatial + Routing)</a></li><li><a href="#part-d-questions-16-20">Part D — Questions 16–20</a></li><li><a href="#16-distributed-message-queue-kafka-like">16. Distributed Message Queue (Kafka-like)</a></li><li><a href="#17-leaderboard-ranking-system">17. Leaderboard / Ranking System</a></li><li><a href="#18-payment-system-digital-wallet">18. Payment System / Digital Wallet</a></li><li><a href="#19-key-value-store-dynamodb-cassandra-like">19. Key-Value Store (DynamoDB / Cassandra-like)</a></li><li><a href="#20-doordash-food-delivery">20. DoorDash / Food Delivery</a></li></ul></nav><h1 id="system-design-interviews-top-20-questions">System Design Interviews — Top 20 Questions</h1>
+<p>A structured, interview-ready workbook. Every design follows the <strong>same 7-step framework</strong> and closes with an <strong>AWS Well-Architected Framework</strong> assessment across all <strong>6 pillars</strong>.</p>
+<hr/>
+<h2>The 7-Step Design Framework (and <em>why</em> each step exists)</h2>
+<p>Interviewers care less about the "right answer" and more about a <strong>structured, requirements-driven thought process</strong>. This framework keeps you organized and demonstrates senior-level judgment. Follow it in order for every problem.</p>
+<h3>Step 1 — Functional Requirements</h3>
+<p><strong>What:</strong> The concrete features the system must provide ("users can shorten a URL and be redirected").</p>
+<p><strong>Why:</strong> Scopes the problem. Interview time is limited, so you agree on the <em>core</em> features to design (and explicitly defer the rest). Prevents building the wrong thing. Always state what's <strong>in scope</strong> and <strong>out of scope</strong>.</p>
+<h3>Step 2 — Non-Functional Requirements (NFRs)</h3>
+<p><strong>What:</strong> The qualities the system must have — scale (users/QPS), latency, availability, consistency, durability, read/write ratio.</p>
+<p><strong>Why:</strong> NFRs <em>drive the architecture</em> far more than features do. "1K users" and "100M users" have identical features but completely different designs. This is where you do <strong>back-of-the-envelope estimation</strong> (QPS, storage, bandwidth) to size the system.</p>
+<h3>Step 3 — Core Entities</h3>
+<p><strong>What:</strong> The main data objects and their relationships (User, URL, Tweet, Order…).</p>
+<p><strong>Why:</strong> Establishes the vocabulary and the data model foundation. It bridges requirements and API/schema, and surfaces relationships that later inform the database choice and partitioning.</p>
+<h3>Step 4 — The API</h3>
+<p><strong>What:</strong> The contract between clients and the system — endpoints, methods, inputs, outputs.</p>
+<p><strong>Why:</strong> Defines the system's boundary and how each functional requirement is fulfilled. Designing the API early forces clarity on exactly what the system does, and naturally reveals read vs write paths (which you then scale differently).</p>
+<h3>Step 5 — High-Level Design</h3>
+<p><strong>What:</strong> The major components (clients, load balancer, services, databases, caches, queues) and how data flows between them, usually as a diagram.</p>
+<p><strong>Why:</strong> This is the heart of the interview — the architecture that satisfies the requirements. Start simple (the minimum that works), then evolve. Show the request path for each core API.</p>
+<h3>Step 6 — Potential Deep Dives</h3>
+<p><strong>What:</strong> Focused exploration of the hardest/most interesting parts (the bottleneck, the hot partition, the consistency challenge, the scaling limit).</p>
+<p><strong>Why:</strong> Demonstrates depth. Interviewers probe here to separate memorized answers from real understanding. This is where you handle scale, edge cases, and failure modes.</p>
+<h3>Step 7 — Trade-offs</h3>
+<p><strong>What:</strong> The conscious choices you made and their alternatives (SQL vs NoSQL, strong vs eventual consistency, sync vs async).</p>
+<p><strong>Why:</strong> Senior engineering <em>is</em> trade-off analysis. There's no perfect design — showing you understand what you gained and gave up, and <em>why it fits the requirements</em>, is the strongest signal you can send.</p>
+<hr/>
+<h2>AWS Well-Architected Framework — the 6 Pillars</h2>
+<p>Each design closes with a Well-Architected review. The framework is AWS's set of best practices for building secure, reliable, efficient, cost-effective, and sustainable systems. The <strong>6 pillars</strong>:</p>
+<ol>
+<li><strong>Operational Excellence</strong> — run and monitor systems to deliver value; automate, use infrastructure as code, make small reversible changes, observe everything, and learn from failures.</li>
+<li><strong>Security</strong> — protect data and systems: strong identity/least-privilege access, encryption in transit and at rest, detective controls, and incident response.</li>
+<li><strong>Reliability</strong> — recover from failures and meet demand: no single points of failure, automated recovery, horizontal scaling, and defined RPO/RTO.</li>
+<li><strong>Performance Efficiency</strong> — use resources efficiently as demand evolves: right-size, pick the right services, cache, and monitor.</li>
+<li><strong>Cost Optimization</strong> — avoid unnecessary spend: match supply to demand, use appropriate pricing models, and measure cost against value.</li>
+<li><strong>Sustainability</strong> — minimize environmental impact: efficient resource use, right-sizing, serverless/managed services, and efficient regions.</li>
+</ol>
+<p><strong>Why assess against it:</strong> It turns "looks good" into a rigorous, multi-dimensional review, and forces explicit trade-offs between pillars (e.g., higher reliability often costs more) — exactly the judgment senior roles demand.</p>
+<hr/>
+<h2>The 20 Questions</h2>
+<table><thead><tr><th>#</th><th>System</th><th>Primary challenge it teaches</th></tr></thead><tbody><tr><td>1</td><td>URL Shortener (TinyURL)</td><td>Key generation, read-heavy scaling, caching</td></tr><tr><td>2</td><td>Pastebin</td><td>Blob storage, expiry, read scaling</td></tr><tr><td>3</td><td>Twitter / News Feed</td><td>Fan-out, feed generation, the celebrity problem</td></tr><tr><td>4</td><td>Instagram</td><td>Media storage, feed, CDN</td></tr><tr><td>5</td><td>WhatsApp / Chat</td><td>Real-time messaging, presence, delivery guarantees</td></tr><tr><td>6</td><td>Rate Limiter</td><td>Algorithms, distributed counters, low latency</td></tr><tr><td>7</td><td>YouTube / Netflix</td><td>Video upload, transcoding, streaming, CDN</td></tr><tr><td>8</td><td>Web Crawler</td><td>Large-scale crawling, politeness, dedup</td></tr><tr><td>9</td><td>Notification System</td><td>Multi-channel fan-out, reliability, dedup</td></tr><tr><td>10</td><td>Uber / Ride-Sharing</td><td>Geospatial matching, real-time location</td></tr><tr><td>11</td><td>Google Drive / Dropbox</td><td>File sync, chunking, conflict resolution</td></tr><tr><td>12</td><td>Ticketmaster</td><td>Reservations, concurrency, preventing double-booking</td></tr><tr><td>13</td><td>Distributed Cache</td><td>Consistent hashing, eviction, replication</td></tr><tr><td>14</td><td>Search Autocomplete</td><td>Trie, prefix queries, ranking, low latency</td></tr><tr><td>15</td><td>Google Maps</td><td>Geospatial data, routing, tiles</td></tr><tr><td>16</td><td>Distributed Message Queue</td><td>Durability, ordering, delivery semantics</td></tr><tr><td>17</td><td>Leaderboard</td><td>Sorted sets, real-time ranking at scale</td></tr><tr><td>18</td><td>Payment System</td><td>Idempotency, consistency, exactly-once, audit</td></tr><tr><td>19</td><td>Key-Value Store</td><td>Partitioning, replication, quorums (Dynamo)</td></tr><tr><td>20</td><td>DoorDash / Food Delivery</td><td>Three-sided marketplace, geospatial, logistics</td></tr></tbody></table>
+<p>Each write-up is self-contained. Read any in isolation, or all in sequence to build broad coverage.</p>
+<h1 id="part-a-questions-1-5">Part A — Questions 1–5</h1>
+<hr/>
+<h1 id="1-url-shortener-tinyurl-bitly">1. URL Shortener (TinyURL / Bitly)</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="1036" height="252" viewBox="0 0 1036 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="1036" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Load Balancer</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">App Servers</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Cache (Redis)</text><line x1="802" y1="68" x2="838" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="846" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="926" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">DB (Key-Value)</text><rect x="438" y="166" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Key Gen Service</text><line x1="518" y1="96" x2="518" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a service that converts a long URL into a short one and redirects users from the short URL to the original.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Shorten:</strong> given a long URL, return a unique short URL.</li>
+<li><strong>Redirect:</strong> given a short URL, redirect (HTTP 302) to the original long URL.</li>
+<li><strong>Custom alias (optional):</strong> let users pick a custom short code.</li>
+<li><strong>Expiration (optional):</strong> links can expire at a chosen time.</li>
+<li><em>Out of scope:</em> user accounts, analytics dashboards (mention them, defer them).</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Read-heavy:</strong> redirects vastly outnumber creations — assume <strong>100:1 read:write</strong>.</li>
+<li><strong>Scale:</strong> ~100M new URLs/month → ~40 writes/sec; ~4,000 redirects/sec; 5B redirects/month.</li>
+<li><strong>Low latency:</strong> redirects must feel instant (&lt; 100 ms P99).</li>
+<li><strong>High availability:</strong> a broken redirect is a broken link — target 99.99%.</li>
+<li><strong>Durability:</strong> links must not be lost.</li>
+<li><em>Estimation:</em> 100M/month × 12 × 5 years ≈ <strong>6B URLs</strong>; ~500 bytes each ≈ <strong>3 TB</strong> — a single well-provisioned DB can hold this, but we plan for growth.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>URL mapping:</strong> <code>shortCode</code> (PK), <code>longUrl</code>, <code>createdAt</code>, <code>expiresAt</code>, <code>ownerId?</code>.</li>
+<li><strong>User (optional):</strong> <code>userId</code>, for custom aliases/ownership.</li>
+</ul>
+<h2>4. The API</h2>
+<pre>POST /urls                → create short URL
+  body: { longUrl, customAlias?, expiresAt? }
+  returns: { shortUrl }
+
+GET /{shortCode}          → 302 redirect to longUrl</pre>
+<p>The write path (<code>POST</code>) is low volume; the read path (<code>GET /{shortCode}</code>) is the hot path we scale hardest.</p>
+<h2>5. High-Level Design</h2>
+<pre>Client → Load Balancer → App servers ──→ Cache (Redis) ──→ Database (KV / SQL)
+                              │
+                        Key Generation Service</pre>
+<ul>
+<li><strong>Create:</strong> app generates a unique <code>shortCode</code>, stores <code>shortCode → longUrl</code> in the DB, returns the short URL.</li>
+<li><strong>Redirect:</strong> app looks up <code>shortCode</code> → check cache first → on miss, read DB, populate cache → return 302.</li>
+<li><strong>The key question — how to generate short codes:</strong> encode a unique number in <strong>base62</strong> (<code>[a-zA-Z0-9]</code>). 62^7 ≈ 3.5 trillion codes in 7 chars — plenty. Get the unique number from either a distributed counter/ID generator or a pre-generated key range per server.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Key generation without collisions:</strong></li>
+<li><em>Counter + base62:</em> a global counter (or ranges handed to each server via ZooKeeper/DB) guarantees uniqueness with no collision checks. Simple and scalable.</li>
+<li><em>Hashing (MD5/SHA of URL, take 7 chars):</em> risks collisions → need a collision check/retry. Also identical URLs collapse (may or may not be desired).</li>
+<li><strong>Choice:</strong> counter-based ranges — collision-free and fast.</li>
+<li><strong>Read scaling:</strong> the redirect path is read-heavy → <strong>cache aggressively</strong> (Redis, LRU). Hot links live in cache; hit rate is very high because access is skewed. Add read replicas and a CDN for the redirect endpoint.</li>
+<li><strong>Database choice:</strong> a simple key-value lookup by <code>shortCode</code> → a KV store (DynamoDB/Cassandra) scales horizontally and is a natural fit; a single SQL DB also works at this scale. Partition by <code>shortCode</code>.</li>
+<li><strong>Custom aliases:</strong> check uniqueness on write (unique constraint / conditional put); reject duplicates.</li>
+<li><strong>Expiration &amp; cleanup:</strong> store <code>expiresAt</code>; a background job (or TTL in the KV store) purges expired links.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>302 vs 301 redirect:</strong> 302 (temporary) lets us keep serving every request (enabling analytics and expiry control) at the cost of not being cached by browsers; 301 (permanent) is cached by browsers (less load) but you lose per-click visibility. Choose <strong>302</strong> for control.</li>
+<li><strong>Counter vs hashing:</strong> counter is collision-free but needs coordination; hashing is stateless but risks collisions. We chose coordination for correctness.</li>
+<li><strong>KV vs SQL:</strong> KV scales writes/storage effortlessly but no rich queries; SQL is simpler and fine at this scale. We lean KV for headroom.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> Managed services (DynamoDB, ElastiCache, ALB) reduce ops; IaC (CloudFormation/CDK) for reproducibility; CloudWatch dashboards on redirect latency and error rate.</li>
+<li><strong>Security:</strong> WAF on the edge to block malicious/abusive shorten requests; validate/sanitize input URLs (prevent open-redirect abuse to phishing); TLS everywhere; least-privilege IAM for services.</li>
+<li><strong>Reliability:</strong> DynamoDB multi-AZ + global tables; ElastiCache with replicas; the redirect path degrades gracefully to DB if cache is down. No SPOF.</li>
+<li><strong>Performance Efficiency:</strong> CloudFront (CDN) + Redis cache serve most redirects; DynamoDB on-demand scales with traffic; base62 keeps codes compact.</li>
+<li><strong>Cost Optimization:</strong> DynamoDB on-demand/auto-scaling matches the spiky read load; caching cuts DB read cost dramatically (reads are the volume driver).</li>
+<li><strong>Sustainability:</strong> Serverless/managed (DynamoDB, Lambda/Fargate) right-sizes automatically; high cache hit rate means fewer compute/DB cycles per request.</li>
+</ul>
+<hr/>
+<h1 id="2-pastebin">2. Pastebin</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="832" height="252" viewBox="0 0 832 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="832" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Load Balancer</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">App Servers</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Metadata DB</text><rect x="438" y="166" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="518" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Object Store (S3)</text><line x1="518" y1="96" x2="518" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="622" y="166" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="702" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Cache (Redis)</text><line x1="518" y1="96" x2="702" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a service where users paste text (or code) and get a shareable link to view it later.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Create paste:</strong> submit text, get a unique URL.</li>
+<li><strong>Read paste:</strong> view the paste via its URL.</li>
+<li><strong>Expiration:</strong> pastes can expire (time-based) or be one-time-view.</li>
+<li><strong>Optional:</strong> custom URL, visibility (public/unlisted).</li>
+<li><em>Out of scope:</em> editing, comments, syntax highlighting (client concern).</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Read-heavy</strong> (a paste is written once, read many times).</li>
+<li><strong>Scale:</strong> ~10M new pastes/month; reads 10× writes.</li>
+<li><strong>Size:</strong> pastes up to a few MB → text is a <strong>blob</strong>, not a DB row field.</li>
+<li><strong>Low read latency</strong>, high availability, durable storage.</li>
+<li><em>Estimation:</em> average paste ~10 KB; 10M/month × 10 KB ≈ <strong>100 GB/month</strong> → object storage, not a database.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Paste:</strong> <code>pasteId</code> (PK), <code>contentPointer</code> (object-store key), <code>createdAt</code>, <code>expiresAt</code>, <code>visibility</code>, <code>viewOnce?</code>.</li>
+<li><strong>User (optional).</strong></li>
+</ul>
+<h2>4. The API</h2>
+<pre>POST /pastes            → { content, expiresAt?, visibility? } → { pasteId, url }
+GET  /pastes/{pasteId}  → returns the paste content (metadata + text)</pre>
+<h2>5. High-Level Design</h2>
+<pre>Client → LB → App servers ──→ Metadata DB (pasteId → object key, expiry)
+                    │
+                    └──────→ Object Storage (S3) for the actual text blob
+                    └──────→ Cache (Redis) for hot pastes</pre>
+<ul>
+<li><strong>Create:</strong> generate <code>pasteId</code> (base62 of a unique id), write the <strong>text to object storage</strong> (key = pasteId), write <strong>metadata to the DB</strong>, return URL.</li>
+<li><strong>Read:</strong> look up metadata (DB/cache) → fetch blob from object storage (or cache) → return.</li>
+<li><strong>Why split blob vs metadata:</strong> databases are bad at large blobs; object storage is cheap, durable, and CDN-friendly. The DB holds only small, queryable metadata.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Storage separation:</strong> metadata in a small fast store (DynamoDB/SQL), content in S3. Cache small hot pastes in Redis; serve large/popular ones via CDN.</li>
+<li><strong>Expiration:</strong> store <code>expiresAt</code>; use S3 lifecycle rules + a metadata TTL/cleanup job. For <strong>one-time view</strong>, mark as read (atomic update) then delete/soft-delete on first fetch.</li>
+<li><strong>ID generation:</strong> same base62 counter approach as the URL shortener.</li>
+<li><strong>Read scaling:</strong> CDN in front of the read endpoint for public pastes; cache metadata to avoid DB hits.</li>
+<li><strong>Abuse/limits:</strong> cap paste size; rate-limit creation; scan for malware/secrets if needed.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Object storage vs DB blob:</strong> object storage wins on cost, durability, and size limits; the trade-off is a second lookup (metadata → blob), mitigated by caching.</li>
+<li><strong>One-time view consistency:</strong> enforcing "exactly one view" needs an atomic check — a small consistency cost on read.</li>
+<li><strong>Public caching vs privacy:</strong> CDN caching boosts performance but is only safe for public/unlisted pastes; private pastes bypass the CDN.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> S3 lifecycle policies automate expiry/cleanup; CloudWatch metrics on create/read rates; IaC for the stack.</li>
+<li><strong>Security:</strong> encrypt content at rest (S3 SSE) and in transit; signed URLs for private pastes; input size limits and WAF to curb abuse; least-privilege access to the bucket.</li>
+<li><strong>Reliability:</strong> S3 gives 11-nines durability and multi-AZ; metadata DB multi-AZ; system tolerates cache loss.</li>
+<li><strong>Performance Efficiency:</strong> CloudFront for popular pastes; Redis for metadata; S3 handles blob scale effortlessly.</li>
+<li><strong>Cost Optimization:</strong> S3 (cheap storage) + lifecycle tiering (move cold pastes to IA/Glacier) + TTL cleanup avoid paying for dead data; serverless compute scales to zero.</li>
+<li><strong>Sustainability:</strong> Tiering and auto-expiry delete unused data (less stored bytes); managed services right-size compute.</li>
+</ul>
+<hr/>
+<h1 id="3-twitter-news-feed">3. Twitter / News Feed</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="1036" height="252" viewBox="0 0 1036 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="1036" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Load Balancer</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Timeline Service</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="722" y="65" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Timeline Cache</text><text x="722" y="79" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">(Redis)</text><line x1="802" y1="68" x2="838" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="846" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="926" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Tweet DB</text><rect x="438" y="166" width="160" height="56" rx="8" ry="8" fill="#7c3aed"/><text x="518" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Fan-out (Kafka)</text><line x1="518" y1="96" x2="518" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design the core of Twitter — post tweets, follow users, and see a timeline of tweets from people you follow.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Post a tweet</strong> (text, up to 280 chars, optional media).</li>
+<li><strong>Follow/unfollow</strong> users.</li>
+<li><strong>Home timeline:</strong> see recent tweets from followed users, newest first.</li>
+<li><strong>User timeline:</strong> see a specific user's own tweets.</li>
+<li><em>Out of scope (mention/defer):</em> likes, retweets, search, DMs, trends.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Extremely read-heavy</strong> (timeline reads ≫ tweet writes).</li>
+<li><strong>Scale:</strong> ~300M DAU; ~500M tweets/day (~6K writes/sec, higher peaks); timeline reads ~10× or more.</li>
+<li><strong>Low latency:</strong> timeline loads &lt; 200 ms.</li>
+<li><strong>High availability</strong> &gt; consistency: eventual consistency is fine (a tweet appearing a second late is acceptable).</li>
+<li><em>Estimation:</em> 500M tweets/day × 300 bytes ≈ <strong>150 GB/day</strong> of text; media dwarfs this and goes to object storage + CDN.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>User:</strong> <code>userId</code>, <code>handle</code>, <code>profile</code>.</li>
+<li><strong>Tweet:</strong> <code>tweetId</code>, <code>authorId</code>, <code>text</code>, <code>mediaUrl?</code>, <code>createdAt</code>.</li>
+<li><strong>Follow:</strong> <code>followerId → followeeId</code> (the social graph).</li>
+<li><strong>Timeline:</strong> a per-user, precomputed list of tweetIds (in the fan-out-on-write model).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>POST /tweets                         → { text, media? } → { tweetId }
+POST /users/{id}/follow              → follow a user
+GET  /feed?cursor=&amp;limit=            → home timeline (paginated)
+GET  /users/{id}/tweets?cursor=      → a user's tweets</pre>
+<h2>5. High-Level Design</h2>
+<pre>Write:  Client → LB → Tweet Service → Tweet DB
+                          │
+                          └→ Fan-out Service → Timeline Cache (per-user lists in Redis)
+
+Read:   Client → LB → Timeline Service → Timeline Cache (Redis) → hydrate from Tweet DB</pre>
+<ul>
+<li><strong>The central problem — how to build the home timeline</strong> for 300M users cheaply and fast. Two strategies:</li>
+<li><strong>Fan-out on write (push):</strong> when a user tweets, push the tweetId into every follower's precomputed timeline list. <strong>Reads are O(1)</strong> (just read your list) — great for the read-heavy workload.</li>
+<li><strong>Fan-out on read (pull):</strong> build the timeline on demand by querying all followees' recent tweets and merging. Cheap writes, expensive reads.</li>
+<li><strong>Chosen approach:</strong> <strong>hybrid</strong> — fan-out on write for most users; fan-out on read for celebrities (see deep dive).</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>The celebrity problem (hot key):</strong> fan-out on write breaks for a user with 100M followers — one tweet = 100M timeline writes (a write storm). <strong>Solution:</strong> don't fan out celebrity tweets; instead, at <strong>read</strong> time, merge the (few) celebrities you follow into your precomputed timeline. This <strong>hybrid</strong> bounds write amplification while keeping normal reads O(1).</li>
+<li><strong>Timeline storage:</strong> store each user's timeline as a capped list (e.g., latest 800 tweetIds) in Redis; hydrate tweet content from the Tweet DB/cache at read time (store IDs, not full tweets, to save memory).</li>
+<li><strong>Tweet storage &amp; sharding:</strong> shard tweets by <code>tweetId</code> (or <code>authorId</code>); use a KV/wide-column store (Cassandra) for write throughput. Media → object storage + CDN.</li>
+<li><strong>Feed ranking:</strong> chronological is simplest; ranked feeds add an ML scoring step over candidate tweets.</li>
+<li><strong>Consistency:</strong> eventual — acceptable for feeds. Use async fan-out via a queue (Kafka) to absorb bursts and decouple posting from delivery.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Push vs pull:</strong> push = fast reads, costly writes (and the celebrity storm); pull = cheap writes, slow reads. Hybrid gets the best of both at the cost of complexity.</li>
+<li><strong>Store IDs vs full tweets in timelines:</strong> IDs save memory but need a hydration step; full copies are faster to read but expensive and stale-prone. Choose IDs + cache.</li>
+<li><strong>Consistency vs availability:</strong> we accept eventual consistency to get high availability and low latency — correct for social feeds.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> Kafka (MSK) decouples fan-out; CloudWatch/X-Ray trace the write→fan-out→read path; canary deploys for ranking changes.</li>
+<li><strong>Security:</strong> authN/authZ on all endpoints; rate limiting to stop spam/bots; content moderation hooks; encryption in transit/at rest.</li>
+<li><strong>Reliability:</strong> async fan-out with a durable queue survives spikes/consumer failures; multi-AZ Cassandra/Redis; degraded mode (pull) if the timeline cache fails.</li>
+<li><strong>Performance Efficiency:</strong> precomputed timelines make reads O(1); Redis + CDN for media; hybrid fan-out avoids the celebrity bottleneck.</li>
+<li><strong>Cost Optimization:</strong> storing IDs (not full tweets) in Redis slashes memory cost; async batching of fan-out smooths capacity; tiered storage for old tweets.</li>
+<li><strong>Sustainability:</strong> avoiding celebrity write-storms (hybrid) saves enormous compute; capped timelines and cold-tiering reduce stored data.</li>
+</ul>
+<hr/>
+<h1 id="4-instagram">4. Instagram</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="1036" height="252" viewBox="0 0 1036 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="1036" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Load Balancer</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Post Service</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Feed Cache (Redis)</text><line x1="802" y1="68" x2="838" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="846" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="926" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Post DB</text><rect x="30" y="166" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="110" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Object Store (S3)</text><line x1="110" y1="96" x2="110" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="214" y="166" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="294" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">CDN</text><line x1="110" y1="96" x2="294" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a photo/video sharing app — upload media, follow users, and view a feed.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Upload</strong> photos/videos with captions.</li>
+<li><strong>Follow</strong> users.</li>
+<li><strong>Feed:</strong> view recent posts from followed users.</li>
+<li><strong>View a user's profile/posts.</strong></li>
+<li><em>Out of scope:</em> stories, DMs, explore/search (mention, defer).</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Read-heavy;</strong> media-heavy (large payloads).</li>
+<li><strong>Scale:</strong> ~500M DAU; ~100M posts/day; billions of feed views/day.</li>
+<li><strong>Low latency</strong> for feed and media load; <strong>high availability</strong>; eventual consistency OK.</li>
+<li><em>Estimation:</em> 100M posts/day × ~2 MB avg media ≈ <strong>200 TB/day</strong> of media → object storage + CDN are mandatory.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>User, Post</strong> (<code>postId</code>, <code>authorId</code>, <code>mediaUrls</code>, <code>caption</code>, <code>createdAt</code>), <strong>Follow</strong>, <strong>Feed</strong> (per-user list of postIds).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>POST /media/upload-url     → returns a pre-signed upload URL (client uploads directly to storage)
+POST /posts                → { mediaKeys, caption } → { postId }
+GET  /feed?cursor=&amp;limit=  → feed of posts
+GET  /users/{id}/posts     → a user's posts</pre>
+<h2>5. High-Level Design</h2>
+<pre>Upload: Client → (pre-signed URL) → Object Storage (S3) directly
+        Client → Post Service → Post DB → Fan-out → Feed Cache (Redis)
+Media:  Object Storage → CDN → Client
+Read:   Client → Feed Service → Feed Cache → hydrate Post DB → media via CDN</pre>
+<ul>
+<li><strong>Direct-to-storage upload:</strong> the client requests a <strong>pre-signed URL</strong> and uploads the media <em>directly</em> to S3, bypassing app servers (huge bandwidth/scaling win). The app only stores metadata.</li>
+<li><strong>Feed:</strong> same fan-out model as Twitter (hybrid push/pull).</li>
+<li><strong>Media delivery:</strong> always via <strong>CDN</strong> — this is the dominant traffic and latency factor.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Media pipeline:</strong> on upload, trigger async processing (generate multiple resolutions/thumbnails, transcode video) via a queue + workers; store variants in S3; serve the right size per device via CDN.</li>
+<li><strong>Feed generation:</strong> fan-out-on-write with the celebrity exception, identical reasoning to Twitter.</li>
+<li><strong>CDN &amp; caching:</strong> aggressive CDN caching of immutable media (content-hashed keys); cache feed lists in Redis.</li>
+<li><strong>Storage tiering:</strong> old media → cheaper storage tiers; hot media stays on CDN edges.</li>
+<li><strong>Consistency:</strong> eventual for feed; media becomes available after processing completes (show a spinner/placeholder meanwhile).</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Pre-signed direct upload vs proxy upload:</strong> direct upload offloads bandwidth and scales better but exposes storage details (mitigated by scoped, short-lived URLs).</li>
+<li><strong>Multiple resolutions (storage) vs on-the-fly resize (compute):</strong> pre-generating variants costs storage but gives fast, cacheable delivery; on-the-fly saves storage but adds latency/compute. Pre-generate for the read-heavy case.</li>
+<li><strong>Eventual consistency:</strong> feed and media availability lag slightly — acceptable for UX.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> S3 event → Lambda/Fargate transcoding pipeline is fully automated; CloudWatch on pipeline lag; IaC.</li>
+<li><strong>Security:</strong> short-lived pre-signed URLs; per-user authorization; S3 bucket policies (no public write); encryption at rest/in transit; content moderation.</li>
+<li><strong>Reliability:</strong> S3 durability; multi-AZ services; async media pipeline retries on failure; feed degrades to pull mode.</li>
+<li><strong>Performance Efficiency:</strong> CloudFront delivers media from the edge; pre-generated variants; Redis feed cache; direct-to-S3 upload removes an app-tier bottleneck.</li>
+<li><strong>Cost Optimization:</strong> S3 Intelligent-Tiering for cold media; CDN offload reduces origin cost; serverless transcoding scales to demand.</li>
+<li><strong>Sustainability:</strong> Tiering/lifecycle deletes/archives cold media; right-sized variants avoid shipping oversized images; edge caching cuts repeated transfer.</li>
+</ul>
+<hr/>
+<h1 id="5-whatsapp-chat-system">5. WhatsApp / Chat System</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="832" height="252" viewBox="0 0 832 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="832" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">WebSocket Gateway</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Chat Servers</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="722" y="65" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Message Store</text><text x="722" y="79" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">(Cassandra)</text><rect x="438" y="166" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="518" y="191" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Session Registry</text><text x="518" y="205" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">(Redis)</text><line x1="518" y1="96" x2="518" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="622" y="166" width="160" height="56" rx="8" ry="8" fill="#7c3aed"/><text x="702" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Pub/Sub (Kafka)</text><line x1="518" y1="96" x2="702" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a real-time 1:1 (and group) messaging system with delivery/read receipts and presence.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Send/receive messages</strong> in real time (1:1 and small groups).</li>
+<li><strong>Delivery &amp; read receipts</strong> (sent / delivered / read).</li>
+<li><strong>Presence</strong> (online/last-seen).</li>
+<li><strong>Message history</strong> (persist and sync across devices).</li>
+<li><em>Out of scope:</em> calls, encryption details (mention E2E), media specifics.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Real-time / low latency:</strong> messages delivered in &lt; 500 ms.</li>
+<li><strong>Scale:</strong> ~2B users; tens of billions of messages/day; hundreds of millions of concurrent connections.</li>
+<li><strong>Reliability:</strong> messages must not be lost; <strong>at-least-once delivery</strong> with dedup → effectively exactly-once for the user.</li>
+<li><strong>Ordering:</strong> messages within a conversation appear in order.</li>
+<li><strong>High availability.</strong></li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>User, Device, Message</strong> (<code>messageId</code>, <code>chatId</code>, <code>senderId</code>, <code>content</code>, <code>createdAt</code>, <code>status</code>), <strong>Chat/Conversation</strong>, <strong>Connection</strong> (which server holds a user's live socket).</li>
+</ul>
+<h2>4. The API (mostly over a persistent connection)</h2>
+<pre>WebSocket: connect, send(message), receive(message), ack(delivered/read), typing, presence
+REST:      GET /chats/{id}/messages?cursor=   (history/sync)</pre>
+<h2>5. High-Level Design</h2>
+<pre>Client ⇄ (WebSocket) ⇄ Chat Servers (hold live connections)
+                              │
+                              ├→ Session Registry (user → which chat server)  [Redis]
+                              ├→ Message Store (per-chat history)  [Cassandra]
+                              └→ Pub/Sub backbone (route between chat servers) [Kafka/Redis]</pre>
+<ul>
+<li><strong>Persistent connections:</strong> clients hold a <strong>WebSocket</strong> to a chat server; the server can push messages instantly.</li>
+<li><strong>Routing between servers:</strong> user A (on server 1) messages user B (on server 2). Server 1 looks up B's server in the <strong>session registry</strong> and forwards via the <strong>pub/sub backbone</strong>; B's server pushes it down B's socket.</li>
+<li><strong>Offline delivery:</strong> if B is offline, persist the message; deliver (and mark delivered) when B reconnects.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Connection management at scale:</strong> millions of concurrent sockets → many chat servers, each holding tens/hundreds of thousands of connections. A <strong>session registry</strong> (Redis) maps <code>userId → serverId</code>. Use a load balancer that supports long-lived connections.</li>
+<li><strong>Delivery guarantees:</strong> persist the message <em>before</em> acking the sender; use <strong>message IDs + client dedup</strong> for at-least-once → exactly-once UX; track status transitions (sent→delivered→read) with acks.</li>
+<li><strong>Ordering:</strong> assign per-chat sequence numbers (or timestamps + tiebreaker); store and read in order. Kafka partition per chat preserves order.</li>
+<li><strong>Groups:</strong> fan out to each member's connection/server; for large groups, this is a mini fan-out problem.</li>
+<li><strong>Presence:</strong> heartbeat over the socket updates a presence store (Redis with TTL); "last seen" = last heartbeat. Presence is best-effort (eventual).</li>
+<li><strong>Message store:</strong> wide-column store (Cassandra) partitioned by <code>chatId</code>, clustered by time — perfect for "recent messages in a chat."</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>WebSocket (stateful) vs polling:</strong> WebSockets give true real-time and efficiency but make servers stateful (harder to scale/balance, need a session registry). Worth it for chat.</li>
+<li><strong>At-least-once + dedup vs exactly-once:</strong> true exactly-once delivery is very hard; at-least-once + idempotent client dedup is the pragmatic standard.</li>
+<li><strong>Presence accuracy vs cost:</strong> precise presence is chatty/expensive; we accept eventual, best-effort presence.</li>
+<li><strong>Store-and-forward:</strong> persisting every message guarantees delivery but adds write load — necessary for reliability.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> managed WebSocket (API Gateway WebSocket) or ECS-managed socket fleet; MSK for the backbone; dashboards on connection count, delivery latency, and queue lag.</li>
+<li><strong>Security:</strong> end-to-end encryption for message content; TLS for transport; authN on connect; abuse/spam controls; least-privilege access to stores.</li>
+<li><strong>Reliability:</strong> persist-before-ack guarantees no loss; multi-AZ Cassandra/Redis/Kafka; reconnect logic + offline queue; no SPOF in routing.</li>
+<li><strong>Performance Efficiency:</strong> pub/sub backbone routes efficiently between servers; Redis session registry for O(1) lookups; partitioned message store for fast history reads.</li>
+<li><strong>Cost Optimization:</strong> connection servers right-sized to concurrent sockets; batching/compression of messages; tiered storage for old history.</li>
+<li><strong>Sustainability:</strong> efficient long-lived connections vs constant polling saves huge network/compute; cold message history archived; autoscaling connection fleet to actual load.</li>
+</ul>
+<hr/>
+<h1 id="part-b-questions-6-10">Part B — Questions 6–10</h1>
+<hr/>
+<h1 id="6-rate-limiter">6. Rate Limiter</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="628" height="252" viewBox="0 0 628 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="628" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="65" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">API Gateway</text><text x="314" y="79" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">(limiter)</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Backend</text><rect x="234" y="166" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="314" y="191" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Counter Store</text><text x="314" y="205" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">(Redis)</text><line x1="314" y1="96" x2="314" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a service that limits how many requests a client can make in a time window, protecting backends from abuse and overload.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Limit requests</strong> per client (by API key / user / IP) to N per window.</li>
+<li><strong>Allow or reject</strong> each request (reject with HTTP 429 + <code>Retry-After</code>).</li>
+<li><strong>Configurable rules</strong> per endpoint/tier.</li>
+<li><em>Out of scope:</em> billing, analytics.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Very low latency:</strong> it sits in the request path — must add &lt; 1–2 ms.</li>
+<li><strong>High throughput:</strong> must handle the full traffic of the system it protects (e.g., 1M RPS).</li>
+<li><strong>Distributed correctness:</strong> the limit must hold across many app servers (a single global count per client).</li>
+<li><strong>Availability:</strong> if the limiter fails, decide fail-open (allow) vs fail-closed (deny).</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Rule:</strong> <code>clientId</code>, <code>limit</code>, <code>windowSize</code>, <code>scope</code> (endpoint).</li>
+<li><strong>Counter/State:</strong> per-client usage state (count + timestamps or tokens).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>allow(clientId, endpoint) → { allowed: bool, remaining, retryAfter? }</pre>
+<p>Usually invoked as <strong>middleware</strong> at the API gateway before the request reaches backends.</p>
+<h2>5. High-Level Design</h2>
+<pre>Client → API Gateway (rate-limit middleware) → Backend
+                     │
+                     └→ Central store (Redis) holding per-client counters</pre>
+<ul>
+<li>Each gateway instance checks/updates the client's counter in a <strong>shared Redis</strong> so the limit is global, not per-instance.</li>
+<li><strong>Algorithm choice</strong> determines the counter shape (see deep dive). Default: <strong>token bucket</strong> (allows bursts, smooth refill).</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Algorithms:</strong></li>
+<li><em>Token bucket:</em> tokens refill at a rate; each request consumes one; allows bursts. <strong>Most common.</strong></li>
+<li><em>Leaky bucket:</em> constant output rate; smooths bursts.</li>
+<li><em>Fixed window counter:</em> simple but has boundary spikes (2× at window edges).</li>
+<li><em>Sliding window log/counter:</em> accurate, avoids boundary problem; counter variant is efficient.</li>
+<li><strong>Distributed counting:</strong> store counters in <strong>Redis</strong>; use atomic operations (<code>INCR</code>, Lua scripts) to avoid race conditions across gateway instances. TTL the keys to the window.</li>
+<li><strong>Latency:</strong> co-locate Redis with gateways; consider a <strong>local token bucket</strong> with periodic sync to Redis (approximate but ultra-fast) for extreme scale.</li>
+<li><strong>Fail-open vs fail-closed:</strong> if Redis is unavailable, <strong>fail-open</strong> (allow) is usual for user-facing APIs (availability &gt; perfect enforcement); fail-closed for security-critical limits.</li>
+<li><strong>Race conditions:</strong> use atomic Redis Lua scripts so check-and-decrement is a single operation.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Accuracy vs performance:</strong> exact distributed counting (every request hits Redis) is accurate but adds latency/load; local approximate counting is fast but can slightly overshoot. Choose per requirement.</li>
+<li><strong>Token vs fixed window:</strong> token bucket allows bursts (usually desirable); fixed window is simplest but spiky.</li>
+<li><strong>Fail-open vs fail-closed:</strong> availability vs strict enforcement — a deliberate business choice.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> use API Gateway usage plans / AWS WAF rate rules where possible (managed); CloudWatch on 429 rates and limiter latency.</li>
+<li><strong>Security:</strong> rate limiting <em>is</em> a security control (anti-DDoS, brute-force); combine with WAF; protect the config store with least-privilege.</li>
+<li><strong>Reliability:</strong> ElastiCache (Redis) multi-AZ; defined fail-open/closed behavior; no SPOF in the limiter path.</li>
+<li><strong>Performance Efficiency:</strong> in-memory Redis with atomic ops; optional local buckets to shave latency at 1M RPS.</li>
+<li><strong>Cost Optimization:</strong> rejecting abusive traffic early saves backend/compute cost; managed WAF/limits avoid custom infra.</li>
+<li><strong>Sustainability:</strong> dropping excess load prevents wasteful downstream compute; efficient in-memory counters.</li>
+</ul>
+<hr/>
+<h1 id="7-youtube-netflix-video-streaming">7. YouTube / Netflix (Video Streaming)</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="1036" height="252" viewBox="0 0 1036 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="1036" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Upload Store (S3)</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Transcoding Workers</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Processed Store (S3)</text><line x1="802" y1="68" x2="838" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="846" y="40" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="926" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">CDN</text><rect x="30" y="166" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="110" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Metadata DB</text><line x1="110" y1="96" x2="110" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a system to upload, process, store, and stream video to millions of viewers.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Upload</strong> videos.</li>
+<li><strong>Process/transcode</strong> into multiple resolutions/formats.</li>
+<li><strong>Stream/playback</strong> with adaptive quality.</li>
+<li><strong>Browse/search</strong> (mention, defer).</li>
+<li><em>Out of scope:</em> recommendations, comments.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Extremely read-heavy</strong> (views ≫ uploads); massive bandwidth.</li>
+<li><strong>Scale:</strong> billions of views/day; petabytes of storage.</li>
+<li><strong>Low startup latency &amp; smooth playback</strong> (no buffering).</li>
+<li><strong>High availability &amp; durability.</strong></li>
+<li><em>Estimation:</em> video is the dominant cost — a single 1080p hour ≈ several GB × multiple renditions; global delivery mandates a CDN.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Video</strong> (<code>videoId</code>, <code>uploaderId</code>, <code>title</code>, <code>status</code>, <code>renditions[]</code>), <strong>User</strong>, <strong>Rendition</strong> (resolution → storage key + manifest), <strong>ViewEvent</strong> (analytics).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>POST /videos/upload-url    → pre-signed upload URL
+POST /videos               → { uploadKey, title } → { videoId } (kicks off processing)
+GET  /videos/{id}/manifest → adaptive streaming manifest (HLS/DASH)
+GET  /videos/{id}          → metadata</pre>
+<h2>5. High-Level Design</h2>
+<pre>Upload:   Client → pre-signed URL → S3 (raw)
+          S3 event → Transcoding Pipeline (workers) → renditions → S3 (processed)
+Metadata: Video Service → Metadata DB
+Playback: Client → Manifest → CDN → video chunks (from S3 origin, cached at edge)</pre>
+<ul>
+<li><strong>Direct-to-S3 upload</strong> (pre-signed), same as Instagram.</li>
+<li><strong>Transcoding pipeline:</strong> split video into segments, transcode to multiple bitrates/resolutions in parallel (queue + worker fleet), package as <strong>HLS/DASH</strong> (chunked with a manifest).</li>
+<li><strong>Adaptive bitrate streaming:</strong> the client fetches a manifest and picks the best rendition for its bandwidth, switching dynamically; chunks are served from the <strong>CDN</strong>.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Transcoding at scale:</strong> segment-level parallelism (split → transcode chunks concurrently → merge/package); a DAG/workflow orchestrator manages steps and retries; autoscale workers with the upload queue.</li>
+<li><strong>Adaptive streaming (HLS/DASH):</strong> video is stored as small chunks per bitrate; the manifest lists them; the player switches bitrate per network conditions → smooth playback.</li>
+<li><strong>CDN is central:</strong> chunks are immutable and highly cacheable; edge caching handles the enormous read bandwidth and keeps startup latency low. Pre-position popular content at edges.</li>
+<li><strong>Storage tiering:</strong> hot videos on fast tiers/CDN; cold/long-tail in cheaper storage.</li>
+<li><strong>Resumable uploads:</strong> chunked, resumable uploads for large files/flaky networks.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Pre-generate all renditions (storage) vs on-the-fly:</strong> pre-generating costs storage but gives instant, cacheable playback; on-the-fly saves storage but adds latency. For read-heavy streaming, <strong>pre-generate</strong>.</li>
+<li><strong>HLS vs DASH:</strong> device compatibility vs openness; often support both.</li>
+<li><strong>CDN cost vs performance:</strong> CDN is expensive but non-negotiable for global smooth playback.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> MediaConvert / Step Functions orchestrate transcoding; CloudWatch on pipeline throughput and rebuffer rates; IaC.</li>
+<li><strong>Security:</strong> signed CDN URLs / DRM for premium content; encryption at rest/in transit; scoped upload URLs; least-privilege pipeline roles.</li>
+<li><strong>Reliability:</strong> S3 durability; pipeline retries; multi-region CDN (CloudFront) with origin failover; no SPOF.</li>
+<li><strong>Performance Efficiency:</strong> CloudFront edge delivery + adaptive bitrate; parallel transcoding; right-sized worker instances (GPU/compute-optimized).</li>
+<li><strong>Cost Optimization:</strong> Spot instances for transcoding; S3 tiering for cold video; CDN offload cuts origin egress; transcode only needed renditions.</li>
+<li><strong>Sustainability:</strong> efficient codecs (AV1/H.265) reduce bytes shipped; Spot + autoscaling use spare capacity; edge caching avoids repeated origin transfer.</li>
+</ul>
+<hr/>
+<h1 id="8-web-crawler">8. Web Crawler</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="1036" height="252" viewBox="0 0 1036 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="1036" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Seed URLs</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">URL Frontier</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Fetcher Workers</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Parser</text><line x1="802" y1="68" x2="838" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="846" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="926" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Content Store (S3)</text><rect x="642" y="166" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="722" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Dedup (Bloom)</text><line x1="722" y1="96" x2="722" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="826" y="166" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="906" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">URL Frontier</text><line x1="722" y1="96" x2="906" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a system that crawls the web — fetching pages, extracting links, and storing content for indexing.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Crawl</strong> pages starting from seed URLs, following links.</li>
+<li><strong>Store</strong> fetched content for downstream processing (indexing).</li>
+<li><strong>Respect politeness</strong> (robots.txt, rate per domain).</li>
+<li><strong>Avoid duplicates</strong> (don't re-crawl the same content endlessly).</li>
+<li><em>Out of scope:</em> the search index/ranking itself.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Massive scale:</strong> billions of pages; must be highly parallel.</li>
+<li><strong>Politeness:</strong> don't overload any single domain.</li>
+<li><strong>Freshness:</strong> re-crawl important pages periodically.</li>
+<li><strong>Fault tolerance:</strong> resume after failures; no lost work.</li>
+<li><strong>Extensibility:</strong> handle different content types.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>URL</strong> (<code>url</code>, <code>status</code>, <code>lastCrawled</code>, <code>priority</code>, <code>domain</code>), <strong>Page/Content</strong> (raw HTML blob), <strong>Domain</strong> (politeness state), <strong>URL Frontier</strong> (the queue of URLs to crawl).</li>
+</ul>
+<h2>4. The API (mostly internal)</h2>
+<pre>addSeed(urls)
+frontier.next() → nextUrl (respecting politeness)
+store(url, content)</pre>
+<h2>5. High-Level Design</h2>
+<pre>Seed URLs → URL Frontier (prioritized, politeness-aware queues)
+                 │
+                 ▼
+          Fetcher workers → fetch page → Content Store (S3)
+                 │                          │
+                 ▼                          ▼
+          Parser (extract links)     Dedup (seen-URL + content hash)
+                 │
+                 └→ new URLs → back into Frontier</pre>
+<ul>
+<li><strong>The URL Frontier</strong> is the heart: a set of queues that decide <em>what to crawl next</em>, balancing <strong>priority</strong> (importance/freshness) and <strong>politeness</strong> (per-domain rate limits).</li>
+<li><strong>Fetch → parse → extract links → dedup → enqueue</strong> is the core loop, run by a large worker fleet.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>URL Frontier design:</strong> two-level queues — front queues for <strong>priority</strong>, back queues for <strong>politeness</strong> (one per domain, with a delay), so each domain is crawled at a polite rate while high-priority URLs go first.</li>
+<li><strong>Deduplication:</strong> track seen URLs (a huge set → Bloom filter + backing store) and <strong>content hashes</strong> (detect identical pages at different URLs) to avoid redundant work/storage.</li>
+<li><strong>Politeness:</strong> obey <code>robots.txt</code> (cache per domain); enforce a min delay between hits to the same host; identify with a user-agent.</li>
+<li><strong>Distributed coordination:</strong> partition the frontier by domain across workers (a domain is handled by one worker to enforce politeness); use a durable queue so crashes don't lose URLs.</li>
+<li><strong>Traps &amp; limits:</strong> detect crawler traps (infinite calendars, dynamic URLs), cap depth/size, handle redirects and errors.</li>
+<li><strong>Freshness:</strong> re-crawl by priority/change-rate (news often, static rarely).</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Politeness vs speed:</strong> per-domain rate limits slow crawling but are mandatory to be a good citizen; parallelize <em>across</em> domains instead.</li>
+<li><strong>BFS vs priority:</strong> pure BFS is simple; priority crawling fetches important pages first but needs scoring.</li>
+<li><strong>Bloom filter dedup:</strong> memory-efficient but has false positives (may skip a few new URLs) — acceptable trade for scale.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> SQS-based frontier; autoscaling Fargate/EC2 fetchers; CloudWatch on crawl rate, error rate, queue depth; IaC.</li>
+<li><strong>Security:</strong> sandbox parsing (untrusted content); egress controls; respect robots.txt (ethical/legal); least-privilege to S3.</li>
+<li><strong>Reliability:</strong> durable queues (SQS) so no URL is lost on crash; idempotent fetch/store; retries with backoff; checkpointed frontier.</li>
+<li><strong>Performance Efficiency:</strong> massive horizontal parallelism across domains; Bloom-filter dedup; content stored in S3.</li>
+<li><strong>Cost Optimization:</strong> Spot instances for fetchers; dedup avoids re-fetching/re-storing; tiered storage for raw HTML.</li>
+<li><strong>Sustainability:</strong> dedup + politeness reduce wasted fetches/bandwidth; Spot uses spare capacity; crawl-frequency tuned to change rate avoids needless re-crawls.</li>
+</ul>
+<hr/>
+<h1 id="9-notification-system">9. Notification System</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="1036" height="252" viewBox="0 0 1036 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="1036" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Services</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Notification API</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#7c3aed"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Queue (Kafka)</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Dispatcher Workers</text><line x1="802" y1="68" x2="838" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="846" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="926" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Channel Adapters</text><rect x="846" y="166" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="926" y="191" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Providers</text><text x="926" y="205" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">(FCM/SES/Twilio)</text><line x1="926" y1="96" x2="926" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a system that sends notifications to users across multiple channels (push, SMS, email).</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Send notifications</strong> via push, SMS, and email.</li>
+<li><strong>Multiple triggers:</strong> other services request a notification for a user.</li>
+<li><strong>User preferences:</strong> channel opt-in/opt-out, quiet hours.</li>
+<li><strong>Reliability:</strong> don't lose notifications; avoid duplicates.</li>
+<li><em>Out of scope:</em> rich templating UI, analytics dashboards.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>High throughput:</strong> millions–billions/day, bursty.</li>
+<li><strong>Reliability:</strong> at-least-once delivery + dedup.</li>
+<li><strong>Low latency</strong> for time-sensitive alerts.</li>
+<li><strong>Extensible:</strong> add channels/providers easily.</li>
+<li><strong>Availability.</strong></li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Notification</strong> (<code>id</code>, <code>userId</code>, <code>channel</code>, <code>payload</code>, <code>status</code>), <strong>User Preferences</strong>, <strong>Template</strong>, <strong>Provider</strong> (APNs/FCM/Twilio/SES adapters).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>POST /notifications  → { userId, type, data, channels? } → { notificationId }
+GET  /notifications/{id}/status
+PUT  /users/{id}/preferences</pre>
+<h2>5. High-Level Design</h2>
+<pre>Services → Notification API → Queue (Kafka/SQS) → Dispatcher workers
+                                                      │
+                     ┌────────────────────────────────┼───────────────────┐
+                     ▼                                 ▼                     ▼
+               Push adapter (FCM/APNs)         SMS adapter (Twilio)   Email adapter (SES)
+                     │                                 │                     │
+                     └──────────── Provider APIs ──────┴─────────────────────┘</pre>
+<ul>
+<li><strong>Ingest → queue → dispatch:</strong> requests are validated and enqueued (buffering + reliability), then dispatcher workers apply <strong>user preferences</strong>, render <strong>templates</strong>, and route to the right <strong>channel adapter</strong>.</li>
+<li><strong>Adapters</strong> abstract each provider so new channels/providers plug in cleanly.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Reliability &amp; dedup:</strong> durable queue; <strong>idempotency keys</strong> so the same logical notification isn't sent twice (client/service retries + at-least-once queue = need dedup); dead-letter queue for repeated failures.</li>
+<li><strong>Fan-out &amp; throughput:</strong> partition the queue for parallelism; rate-limit per provider (they have their own limits); batch where providers allow.</li>
+<li><strong>User preferences &amp; quiet hours:</strong> check opt-outs/quiet hours before sending; schedule delayed sends.</li>
+<li><strong>Prioritization:</strong> separate queues for high-priority (OTP, security) vs bulk (marketing) so urgent ones aren't stuck behind a marketing blast.</li>
+<li><strong>Provider failover:</strong> if one SMS provider fails, fail over to a backup; track delivery receipts/callbacks to confirm delivery.</li>
+<li><strong>Templating:</strong> server-side templates with localization.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>At-least-once + dedup vs exactly-once:</strong> exactly-once is impractical across third-party providers; at-least-once + idempotency is the standard.</li>
+<li><strong>Sync vs async:</strong> async (queue) decouples callers, absorbs bursts, and enables retries — at the cost of immediate delivery confirmation (use status callbacks).</li>
+<li><strong>Priority queues vs single queue:</strong> separate queues add complexity but protect urgent traffic.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> SNS/SES + SQS provide managed building blocks; CloudWatch on delivery success/latency per channel; DLQs monitored; IaC.</li>
+<li><strong>Security:</strong> protect PII (phone/email) with encryption; least-privilege to provider credentials (Secrets Manager); consent/opt-out enforcement (compliance).</li>
+<li><strong>Reliability:</strong> durable queues + retries + DLQ; provider failover; idempotent delivery; multi-AZ.</li>
+<li><strong>Performance Efficiency:</strong> partitioned queues for parallel dispatch; batching; priority lanes for urgent messages.</li>
+<li><strong>Cost Optimization:</strong> batching and preference filtering avoid needless (paid) SMS/email sends; SQS/SNS scale to demand; suppress bounces.</li>
+<li><strong>Sustainability:</strong> filtering unwanted/opted-out sends reduces wasted work and provider load; autoscaling dispatchers to actual volume.</li>
+</ul>
+<hr/>
+<h1 id="10-uber-ride-sharing">10. Uber / Ride-Sharing</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="1036" height="252" viewBox="0 0 1036 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="1036" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Driver App</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Location Service</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Geo Index (Redis)</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Matching Service</text><line x1="802" y1="68" x2="838" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="846" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="926" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Trip DB</text><rect x="642" y="166" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="722" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Rider App</text><line x1="722" y1="96" x2="722" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design the core of a ride-hailing app — match riders to nearby drivers and track the trip.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Riders request a ride</strong> (pickup + destination).</li>
+<li><strong>Match</strong> the rider to a nearby available driver.</li>
+<li><strong>Real-time location</strong> tracking during the trip.</li>
+<li><strong>Trip lifecycle:</strong> request → matched → in-progress → completed.</li>
+<li><em>Out of scope:</em> payments (see Q18), ratings, surge pricing details.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Low latency matching</strong> (seconds) and real-time location updates.</li>
+<li><strong>Scale:</strong> millions of drivers/riders; high-frequency location pings (every few seconds).</li>
+<li><strong>High availability</strong> (a city outage = lost revenue and stranded users).</li>
+<li><strong>Consistency:</strong> a driver must be matched to <strong>one</strong> rider at a time (no double-booking).</li>
+<li><strong>Geospatial</strong> queries at scale.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Rider, Driver</strong> (<code>driverId</code>, <code>location</code>, <code>status</code>), <strong>Trip</strong> (<code>tripId</code>, <code>riderId</code>, <code>driverId</code>, <code>status</code>, <code>route</code>), <strong>Location</strong> (frequent updates).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>POST /rides              → { pickup, destination } → { tripId, status }
+POST /drivers/location   → { driverId, lat, lng } (frequent updates)
+WebSocket                → live trip/location updates to rider &amp; driver</pre>
+<h2>5. High-Level Design</h2>
+<pre>Driver app → Location Service → Geospatial index (Redis Geo / quadtree)  [driver locations]
+Rider app  → Ride/Matching Service → query nearby drivers → offer → Trip Service → Trip DB
+Both       ⇄ WebSocket gateway ⇄ real-time updates</pre>
+<ul>
+<li><strong>Location ingestion:</strong> drivers stream location; stored in a <strong>geospatial index</strong> optimized for "find drivers near (lat,lng)".</li>
+<li><strong>Matching:</strong> on a ride request, query nearby available drivers, rank (ETA/distance), offer to the best; on accept, create the <strong>Trip</strong> and lock that driver.</li>
+<li><strong>Real-time updates</strong> flow over WebSockets to both parties.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Geospatial indexing:</strong> use <strong>geohash / quadtree / S2 cells</strong> (or Redis GEO) to index driver locations so "nearby" queries are fast. Geohash buckets nearby points into shared prefixes → efficient range lookups. Rebalance cell size by density (dense cities vs rural).</li>
+<li><strong>High-frequency location writes:</strong> millions of drivers pinging every few seconds = huge write volume → keep current location in an <strong>in-memory store</strong> (Redis), not a disk DB; persist trip routes separately/asynchronously.</li>
+<li><strong>Matching consistency:</strong> when offering a driver, <strong>atomically</strong> mark them "reserved" so two riders can't grab the same driver (Redis lock / conditional update). Handle decline/timeout → offer next driver.</li>
+<li><strong>Scaling by geography:</strong> partition by city/region (natural sharding) — location data and matching are inherently local, so shard by geo cell/region.</li>
+<li><strong>Real-time connections:</strong> WebSocket gateway with a session registry (like the chat system) to push updates.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>In-memory vs durable location store:</strong> in-memory (Redis) gives the needed write throughput/low latency; the trade is durability (fine — current location is ephemeral; trips are persisted).</li>
+<li><strong>Geohash precision:</strong> finer cells = more precise but more buckets to query at borders; coarser = fewer queries but less precise. Tune per density.</li>
+<li><strong>Matching optimality vs speed:</strong> the globally optimal match is expensive; a fast "good enough nearest" match wins for UX.</li>
+<li><strong>Consistency for matching (strong) vs everything else (eventual):</strong> strong only where it matters (driver reservation).</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> ElastiCache (Redis Geo), managed WebSocket/API Gateway; CloudWatch on match latency and location ingest rate; regional deployments; IaC.</li>
+<li><strong>Security:</strong> authN on all apps; protect precise location (PII) with encryption + strict access; least-privilege; audit trip data access.</li>
+<li><strong>Reliability:</strong> multi-AZ Redis with replicas; regional isolation limits blast radius; trip state persisted durably; reconnect handling for sockets.</li>
+<li><strong>Performance Efficiency:</strong> in-memory geo index for fast nearby queries; geo-sharding keeps queries local; WebSockets for real-time push.</li>
+<li><strong>Cost Optimization:</strong> in-memory only for hot/current location (small, ephemeral); async persistence; autoscale by regional demand (rush-hour peaks).</li>
+<li><strong>Sustainability:</strong> geo-partitioning avoids global scans; efficient location updates (deltas/throttled pings) cut network/compute; scale to demand.</li>
+</ul>
+<hr/>
+<h1 id="part-c-questions-11-15">Part C — Questions 11–15</h1>
+<hr/>
+<h1 id="11-google-drive-dropbox-file-storage-sync">11. Google Drive / Dropbox (File Storage &amp; Sync)</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="628" height="252" viewBox="0 0 628 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="628" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client (watcher)</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Metadata Service</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Metadata DB</text><rect x="30" y="166" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="110" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Chunk Store (S3)</text><line x1="110" y1="96" x2="110" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="166" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="314" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Changes Feed</text><line x1="314" y1="96" x2="314" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a cloud file storage service that stores files and syncs them across a user's devices.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Upload/download</strong> files.</li>
+<li><strong>Sync</strong> changes across all of a user's devices.</li>
+<li><strong>Share</strong> files/folders with other users.</li>
+<li><strong>Versioning</strong> (keep file history).</li>
+<li><em>Out of scope:</em> real-time collaborative editing.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Durability first:</strong> never lose a file (11 nines).</li>
+<li><strong>Scale:</strong> hundreds of millions of users; exabytes of data; large files.</li>
+<li><strong>Efficient sync:</strong> upload only what changed, not whole files.</li>
+<li><strong>Availability &amp; consistency:</strong> a user should see a consistent view of their files.</li>
+<li><em>Estimation:</em> files are large and numerous → object storage; sync efficiency drives the design.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>User, File</strong> (<code>fileId</code>, <code>name</code>, <code>ownerId</code>, <code>size</code>, <code>version</code>), <strong>Chunk</strong> (a piece of a file + hash), <strong>Device</strong>, <strong>Share/Permission</strong>, <strong>FileMetadata/Version</strong>.</li>
+</ul>
+<h2>4. The API</h2>
+<pre>POST /files/{id}/chunks     → upload changed chunks (by hash)
+GET  /files/{id}            → metadata + chunk list
+GET  /chunks/{hash}         → download a chunk
+POST /files/{id}/share      → grant access
+GET  /changes?since=cursor  → sync: what changed for this user</pre>
+<h2>5. High-Level Design</h2>
+<pre>Client (watcher) → chunk &amp; hash file → upload changed chunks → S3 (chunk store)
+                 → update Metadata Service → Metadata DB (files, versions, chunk lists)
+Sync: Client polls/subscribes to /changes → pulls new chunks → reassembles file</pre>
+<ul>
+<li><strong>Chunking:</strong> files are split into fixed/variable-size <strong>chunks</strong>, each identified by a <strong>content hash</strong>. Only chunks whose hash changed are uploaded (<strong>delta sync</strong>) → massive bandwidth savings.</li>
+<li><strong>Metadata vs content split:</strong> chunks live in <strong>object storage</strong>; the <strong>metadata DB</strong> tracks files → ordered chunk hashes, versions, and permissions.</li>
+<li><strong>Sync:</strong> a client watches for local changes and polls a <strong>changes feed</strong> for remote changes, downloading only new chunks.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Delta sync via chunking + dedup:</strong> content-addressed chunks mean identical chunks (across versions or even users) are stored once (<strong>dedup</strong>) and never re-uploaded. Editing 1 MB of a 1 GB file uploads ~1 MB.</li>
+<li><strong>Conflict resolution:</strong> two devices edit offline → conflict. Strategies: last-write-wins, or keep both as conflicted copies (Dropbox's approach) — never silently lose data. Use version vectors to detect conflicts.</li>
+<li><strong>Metadata consistency:</strong> the metadata DB is the source of truth for "what the file looks like now"; make metadata updates transactional so a file version is atomic (all its chunks referenced together).</li>
+<li><strong>Sync efficiency:</strong> a <strong>changes/journal feed</strong> per user (cursor-based) lets clients pull only deltas; use notifications (long-poll/WebSocket) for near-real-time sync.</li>
+<li><strong>Large file uploads:</strong> resumable, parallel chunk uploads.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Fixed vs variable-size chunking:</strong> fixed is simple but a byte insertion shifts all chunks (poor dedup); <strong>content-defined (variable) chunking</strong> dedups better across edits but is more complex.</li>
+<li><strong>LWW vs conflict copies:</strong> LWW is simple but can lose edits; conflict copies preserve data but add user friction. Preserve data.</li>
+<li><strong>Metadata DB choice:</strong> strong consistency for metadata (SQL/transactional) vs scale — often a transactional metadata store + object storage for scale.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> S3 for chunks + managed metadata DB; CloudWatch on sync lag and upload success; IaC; automated version cleanup.</li>
+<li><strong>Security:</strong> per-file encryption at rest; scoped access (pre-signed URLs); robust sharing/permission model; audit access; TLS.</li>
+<li><strong>Reliability:</strong> S3 11-nines durability + versioning; multi-AZ metadata DB; atomic metadata updates; resumable uploads survive network failures.</li>
+<li><strong>Performance Efficiency:</strong> delta sync + dedup minimize transfer; CDN for downloads; parallel chunk I/O.</li>
+<li><strong>Cost Optimization:</strong> dedup stores each chunk once; S3 tiering for cold files/old versions; only-changed-chunk uploads cut bandwidth cost.</li>
+<li><strong>Sustainability:</strong> dedup + delta sync drastically reduce stored bytes and network transfer; lifecycle-archive old versions.</li>
+</ul>
+<hr/>
+<h1 id="12-ticketmaster-ticket-booking">12. Ticketmaster (Ticket Booking)</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="832" height="252" viewBox="0 0 832 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="832" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Booking Service</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Seat Hold (atomic)</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Bookings DB (ACID)</text><rect x="30" y="166" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="110" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Waiting Room</text><line x1="110" y1="96" x2="110" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="166" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Payment Gateway</text><line x1="314" y1="96" x2="314" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a system to browse events and book seats, preventing double-booking under high concurrency (e.g., a hot concert on-sale).</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Browse events</strong> and view seat availability.</li>
+<li><strong>Reserve/hold</strong> a seat during checkout.</li>
+<li><strong>Purchase</strong> the held seat.</li>
+<li><strong>Release</strong> holds that expire without purchase.</li>
+<li><em>Out of scope:</em> recommendations, dynamic pricing details.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Strong consistency for booking:</strong> a seat is sold to <strong>exactly one</strong> buyer (no double-booking) — this is the crux.</li>
+<li><strong>High concurrency / spiky:</strong> thousands compete for the same seats at on-sale time.</li>
+<li><strong>Read-heavy browsing</strong> but critical-write booking.</li>
+<li><strong>Availability</strong> for browsing; correctness for buying.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Event</strong> (<code>eventId</code>, <code>venue</code>, <code>datetime</code>), <strong>Seat</strong> (<code>seatId</code>, <code>eventId</code>, <code>status</code>: available/held/booked), <strong>Reservation/Hold</strong> (<code>seatId</code>, <code>userId</code>, <code>expiresAt</code>), <strong>Booking/Order</strong>, <strong>User</strong>.</li>
+</ul>
+<h2>4. The API</h2>
+<pre>GET  /events/{id}/seats          → seat map + availability
+POST /events/{id}/holds          → { seatIds } → hold seats (temporary)
+POST /bookings                   → confirm purchase of held seats
+DELETE /holds/{id}               → release</pre>
+<h2>5. High-Level Design</h2>
+<pre>Browse: Client → LB → Event Service → Cache (seat availability) → Event DB
+Book:   Client → Booking Service → (atomic seat hold) → Reservation store → Payment → confirm
+                                        │
+                                  Hold expiry job (releases unpaid holds)</pre>
+<ul>
+<li><strong>Hold-then-purchase:</strong> to avoid taking payment for a seat someone else grabs, first <strong>atomically hold</strong> the seat (status available→held with a TTL), then process payment, then finalize (held→booked). If payment fails or the hold expires, release it.</li>
+<li><strong>The critical section</strong> is the atomic seat state transition — must prevent two users holding the same seat.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Preventing double-booking (the core):</strong> the seat hold must be <strong>atomic and strongly consistent</strong>. Options:</li>
+<li><em>DB transaction with row lock / conditional update:</em> <code>UPDATE seats SET status='held' WHERE seatId=? AND status='available'</code> — succeeds for only one user.</li>
+<li><em>Distributed lock (Redis) per seat</em> for the hold window.</li>
+<li>Use an ACID database for the seat/booking state — correctness over scale here.</li>
+<li><strong>Hold expiry:</strong> store <code>expiresAt</code>; a background job (or TTL) releases expired holds back to available. Handle the race between expiry and late payment.</li>
+<li><strong>Handling on-sale spikes:</strong> a <strong>virtual waiting room / queue</strong> admits users gradually so the booking DB isn't overwhelmed; browse traffic served from cache/CDN; only the booking path touches the strongly-consistent store.</li>
+<li><strong>Read vs write split:</strong> availability views can be slightly stale (cached); the <em>hold/purchase</em> path is strongly consistent.</li>
+<li><strong>Idempotency:</strong> booking requests carry idempotency keys (retries mustn't double-book or double-charge).</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Strong consistency vs scale:</strong> the booking path sacrifices some scalability for correctness (locks/transactions) — the right call; scale the <em>browse</em> path separately.</li>
+<li><strong>Optimistic vs pessimistic locking:</strong> optimistic (conditional update) scales better under low contention; pessimistic (locks) is safer under the extreme contention of a hot on-sale. Often optimistic with retries.</li>
+<li><strong>Hold TTL length:</strong> longer holds = better UX but seats locked away from others; shorter = more churn. Tune (e.g., 5–10 min).</li>
+<li><strong>Waiting room:</strong> adds friction but protects the system and ensures fairness.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> managed ACID DB (Aurora); queue-based waiting room; CloudWatch on hold conflicts, booking latency; game-day tests for on-sales.</li>
+<li><strong>Security:</strong> authN; idempotent, auditable transactions; PCI-compliant payment handoff; least-privilege; fraud checks.</li>
+<li><strong>Reliability:</strong> multi-AZ Aurora; the strongly-consistent core prevents double-booking; holds auto-release on failure; idempotency prevents duplicate orders.</li>
+<li><strong>Performance Efficiency:</strong> cache/CDN for browsing; waiting room throttles write load to the DB's capacity; conditional updates avoid heavy locking where possible.</li>
+<li><strong>Cost Optimization:</strong> scale the read path cheaply (cache) and reserve strong-consistency resources for the booking path; autoscale for on-sale spikes then scale down.</li>
+<li><strong>Sustainability:</strong> waiting room smooths spikes (avoid massive over-provisioning); cached browsing reduces DB load; scale to event schedule.</li>
+</ul>
+<hr/>
+<h1 id="13-distributed-cache">13. Distributed Cache</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="832" height="252" viewBox="0 0 832 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="832" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="65" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Consistent-Hash</text><text x="314" y="79" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Router</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Cache Node</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Replica Node</text><rect x="30" y="166" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="110" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Backing DB</text><line x1="110" y1="96" x2="110" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a distributed in-memory cache (like Redis/Memcached at scale) that many services can share.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>get(key), set(key, value, ttl), delete(key).</strong></li>
+<li><strong>Scale horizontally</strong> across many nodes.</li>
+<li><strong>Eviction</strong> when memory is full.</li>
+<li><strong>Optional:</strong> replication for availability.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Very low latency</strong> (sub-millisecond).</li>
+<li><strong>High throughput</strong> (millions of ops/sec).</li>
+<li><strong>Scalable capacity</strong> (add nodes to grow).</li>
+<li><strong>Availability:</strong> tolerate node failures.</li>
+<li><strong>Consistency:</strong> typically eventual/best-effort (it's a cache).</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Entry</strong> (<code>key</code>, <code>value</code>, <code>ttl</code>, <code>lastAccess</code>), <strong>Node</strong> (a cache server holding a partition), <strong>Ring</strong> (consistent-hash mapping of keys→nodes).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>get(key) → value | miss
+set(key, value, ttl)
+delete(key)</pre>
+<h2>5. High-Level Design</h2>
+<pre>Client (with cache-aware library) → consistent hash → target Node → in-memory store
+                                                          │
+                                                    Replica node (optional)</pre>
+<ul>
+<li><strong>Partitioning via consistent hashing:</strong> keys are distributed across nodes using <strong>consistent hashing</strong> so adding/removing a node remaps only a small fraction of keys (not all).</li>
+<li><strong>Client-side routing:</strong> clients (or a proxy) hash the key to find the right node → one network hop → in-memory lookup.</li>
+<li><strong>Eviction (LRU) + TTL</strong> manage memory per node.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Consistent hashing + virtual nodes:</strong> place nodes on a hash ring; each physical node owns many <strong>virtual nodes</strong> for even distribution and smooth rebalancing when nodes join/leave. This is the key to horizontal scaling without mass remapping.</li>
+<li><strong>Replication &amp; availability:</strong> replicate each partition to N replicas (leader + followers). On node failure, a replica takes over. Choose sync (consistent, slower) vs async (fast, may lose recent writes) replication.</li>
+<li><strong>Eviction policies:</strong> LRU (default), LFU, or TTL-based; per-node memory bound. Approximate LRU (sampling) is common for performance.</li>
+<li><strong>Hot keys:</strong> a single very hot key can overload its node → replicate hot keys to multiple nodes, or add a small client-side local cache (L1) in front.</li>
+<li><strong>Cache coherence:</strong> on writes to the backing DB, invalidate/update cache (write-through or explicit invalidation); accept eventual consistency.</li>
+<li><strong>Thundering herd:</strong> request coalescing + TTL jitter + stale-while-revalidate on misses.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Consistency vs performance:</strong> async replication and eventual consistency give speed/availability; a cache rarely needs strong consistency.</li>
+<li><strong>Client-side routing vs proxy:</strong> client-side is one fewer hop (faster) but couples clients to topology; a proxy centralizes routing at a small latency cost.</li>
+<li><strong>Replication cost:</strong> replicas improve availability but cost memory; tune replica count to the availability need.</li>
+<li><strong>Memory vs hit rate:</strong> more memory = higher hit rate = less backend load; balance cost vs benefit.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> ElastiCache (managed Redis/Memcached) handles clustering, failover, patching; CloudWatch on hit rate, evictions, latency; IaC.</li>
+<li><strong>Security:</strong> in-transit/at-rest encryption; VPC isolation; AUTH; least-privilege; not internet-exposed.</li>
+<li><strong>Reliability:</strong> multi-AZ replicas + automatic failover; consistent hashing limits rebalancing blast radius; clients degrade to DB on miss/outage.</li>
+<li><strong>Performance Efficiency:</strong> in-memory sub-ms access; consistent hashing for even load; L1 local caches for hot keys.</li>
+<li><strong>Cost Optimization:</strong> right-size node memory; higher hit rate reduces expensive DB load; reserved nodes for steady baseline.</li>
+<li><strong>Sustainability:</strong> caching avoids recomputation/DB work (fewer cycles per request); right-sized memory; eviction keeps only useful data.</li>
+</ul>
+<hr/>
+<h1 id="14-search-autocomplete-typeahead">14. Search Autocomplete / Typeahead</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="628" height="252" viewBox="0 0 628 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="628" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Autocomplete Service</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Trie / Top-K Store</text><rect x="438" y="166" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="191" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Query Aggregation</text><text x="518" y="205" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">(offline)</text><line x1="518" y1="96" x2="518" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design the autocomplete that suggests top queries as a user types, with very low latency.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Suggest</strong> top-K completions for a given prefix.</li>
+<li><strong>Rank</strong> suggestions (by popularity/frequency).</li>
+<li><strong>Update</strong> suggestions as new queries trend.</li>
+<li><em>Out of scope:</em> full search itself, personalization (mention).</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Ultra-low latency:</strong> suggestions must appear within ~50–100 ms as the user types.</li>
+<li><strong>Read-heavy:</strong> every keystroke is a query.</li>
+<li><strong>Scale:</strong> billions of queries; huge prefix space.</li>
+<li><strong>Freshness:</strong> trending terms should appear (near-real-time-ish, not instant).</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Term/Query</strong> (<code>text</code>, <code>frequency</code>), <strong>Trie node</strong> (prefix → top suggestions), <strong>PrefixTopK</strong> (precomputed top-K per prefix).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>GET /autocomplete?prefix=har&amp;limit=10 → ["harry potter", "hard drive", ...]</pre>
+<h2>5. High-Level Design</h2>
+<pre>Query logs → aggregation (counts) → build Trie / precomputed top-K per prefix
+Serving: Client → Autocomplete Service → Trie/top-K store (in-memory) → suggestions</pre>
+<ul>
+<li><strong>Trie (prefix tree):</strong> stores terms so that walking the prefix path yields matching completions. To make it fast, <strong>precompute and cache the top-K suggestions at each node</strong>, so a lookup is: walk to the prefix node → return its cached top-K (no scanning subtrees).</li>
+<li><strong>Two pipelines:</strong> an <strong>offline pipeline</strong> aggregates query frequencies and (re)builds the trie/top-K; an <strong>online serving layer</strong> answers prefix queries from an in-memory structure.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Precomputed top-K per prefix:</strong> naively, finding top-K under a prefix means traversing the whole subtree per keystroke — too slow. Instead, <strong>store the top-K completions directly on each trie node</strong> (updated offline). Lookup becomes O(prefix length). This is the key latency trick.</li>
+<li><strong>Building/updating the trie:</strong> aggregate query counts from logs (batch, e.g., hourly/daily via MapReduce/Spark); rebuild or incrementally update the trie; ship the new structure to serving nodes. Trending terms appear after the next build (near-real-time via a faster streaming path if needed).</li>
+<li><strong>Serving at scale:</strong> keep the trie in memory on serving nodes; <strong>shard by prefix</strong> (e.g., by first letters) across nodes; replicate for read throughput; front with a cache/CDN for the hottest prefixes.</li>
+<li><strong>Ranking:</strong> frequency-based, optionally time-decayed (recent popularity), optionally personalized/localized.</li>
+<li><strong>Data size:</strong> the trie can be large → shard and compress; only store top-K per node (not all completions).</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Precompute (storage) vs compute-on-read:</strong> precomputing top-K per node uses more memory/build time but gives the required read latency — the right trade for a read-heavy, latency-critical feature.</li>
+<li><strong>Freshness vs cost:</strong> rebuilding more often surfaces trends faster but costs more compute; batch (periodic) rebuild is usually enough, with an optional streaming layer for hot trends.</li>
+<li><strong>Trie vs other structures:</strong> tries give natural prefix matching; alternatives (ternary search trees, FSTs) trade memory vs speed.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> offline build on EMR/Glue; versioned trie artifacts shipped to serving nodes; CloudWatch on suggestion latency and build success; IaC.</li>
+<li><strong>Security:</strong> sanitize/filter suggestions (no offensive/PII leakage from query logs); TLS; least-privilege on logs.</li>
+<li><strong>Reliability:</strong> immutable, versioned trie artifacts (roll back a bad build); replicated serving nodes; cache fallback; multi-AZ.</li>
+<li><strong>Performance Efficiency:</strong> in-memory precomputed top-K → O(prefix) lookups; prefix sharding; CDN/cache for hot prefixes.</li>
+<li><strong>Cost Optimization:</strong> batch builds on Spot/EMR; serve from memory (no per-keystroke DB hits); cache hottest prefixes to cut serving cost.</li>
+<li><strong>Sustainability:</strong> precompute-once/serve-many amortizes compute; batch aggregation on spare capacity; caching avoids repeated work per keystroke.</li>
+</ul>
+<hr/>
+<h1 id="15-google-maps-geospatial-routing">15. Google Maps (Geospatial + Routing)</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="628" height="252" viewBox="0 0 628 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="628" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">CDN</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Tile Store (S3)</text><rect x="30" y="166" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="110" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Routing Service</text><line x1="110" y1="96" x2="110" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="214" y="166" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="294" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Place Search</text><line x1="110" y1="96" x2="294" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design core mapping features — render the map, find places, and compute driving routes with ETAs.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Render map tiles</strong> for a location/zoom.</li>
+<li><strong>Search places</strong> (points of interest).</li>
+<li><strong>Routing:</strong> shortest/fastest path between two points, with ETA.</li>
+<li><strong>Live traffic</strong> affecting routes/ETA (mention).</li>
+<li><em>Out of scope:</em> street view, indoor maps.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Low latency</strong> for tiles and routing.</li>
+<li><strong>Massive scale:</strong> billions of requests; planet-scale data.</li>
+<li><strong>Read-heavy</strong> (tiles/routes read far more than the map changes).</li>
+<li><strong>Freshness</strong> for traffic/ETA.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Tile</strong> (<code>z/x/y</code> → image/vector), <strong>Place/POI</strong> (<code>id</code>, <code>location</code>, <code>metadata</code>), <strong>RoadGraph</strong> (nodes = intersections, edges = road segments with weights), <strong>TrafficData</strong> (edge → current speed).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>GET /tiles/{z}/{x}/{y}            → map tile
+GET /places?q=&amp;near=lat,lng       → place search
+GET /route?from=&amp;to=&amp;mode=        → { path, distance, eta }</pre>
+<h2>5. High-Level Design</h2>
+<pre>Tiles:  Client → CDN → Tile store (pre-rendered tiles in object storage)
+Places: Client → Place Service → Geospatial index (search by location/name)
+Route:  Client → Routing Service → Road Graph (in-memory/partitioned) + Traffic → path + ETA</pre>
+<ul>
+<li><strong>Tiles are pre-rendered</strong> at multiple zoom levels and served from a <strong>CDN</strong> (immutable, highly cacheable) — this handles the bulk of read traffic cheaply.</li>
+<li><strong>Routing</strong> runs a shortest-path algorithm over a <strong>road graph</strong> weighted by distance/time, adjusted by <strong>live traffic</strong>.</li>
+<li><strong>Place search</strong> uses a <strong>geospatial index</strong> for "near me" and name queries.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Routing at planet scale:</strong> plain Dijkstra over billions of edges is too slow. Use <strong>graph preprocessing / hierarchical routing</strong> (Contraction Hierarchies, highway hierarchies) — precompute shortcuts so long routes are computed in milliseconds. Partition the graph by region; route within/between partitions.</li>
+<li><strong>Geospatial indexing:</strong> <strong>geohash / S2 / quadtree</strong> to index places and map regions for fast spatial queries (Q10 shares this idea). Tiles are naturally partitioned by <code>z/x/y</code>.</li>
+<li><strong>Live traffic &amp; ETA:</strong> ingest GPS/probe data → estimate current speed per road segment → update edge weights → routes/ETAs reflect traffic. This is a streaming aggregation pipeline.</li>
+<li><strong>Tile serving:</strong> pre-render popular tiles; vector tiles allow client-side rendering (less data); CDN caches aggressively.</li>
+<li><strong>Scale:</strong> everything is read-heavy and cacheable except routing (compute) and traffic (streaming).</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Pre-rendered raster vs vector tiles:</strong> raster is simple and cacheable but heavy and zoom-fixed; vector tiles are smaller and flexible (client renders) but need client compute. Often vector for modern apps.</li>
+<li><strong>Precomputed routing (Contraction Hierarchies) vs on-demand Dijkstra:</strong> preprocessing costs build time/storage but makes queries fast; essential at scale.</li>
+<li><strong>ETA accuracy vs freshness cost:</strong> more frequent traffic updates = better ETAs but more streaming compute.</li>
+<li><strong>Consistency:</strong> map/traffic data is eventually consistent — acceptable.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> tile pipelines and graph preprocessing automated; traffic streaming via Kinesis/MSK; CloudWatch on route latency and tile hit rate; IaC.</li>
+<li><strong>Security:</strong> API keys + quotas; protect user location/trip data (PII); TLS; least-privilege to data stores.</li>
+<li><strong>Reliability:</strong> CDN + object storage for tiles (highly durable/available); partitioned routing service (regional isolation); graceful degradation (stale traffic if the stream lags).</li>
+<li><strong>Performance Efficiency:</strong> CDN for tiles; contraction hierarchies for fast routing; geospatial indexes; in-memory hot graph partitions.</li>
+<li><strong>Cost Optimization:</strong> CDN offload for the dominant tile traffic; precomputed routing avoids repeated heavy compute; Spot/batch for preprocessing; tiered storage for rarely-viewed tiles.</li>
+<li><strong>Sustainability:</strong> massive CDN cache hit rates avoid recompute/transfer; precompute-once routing; vector tiles cut bytes shipped.</li>
+</ul>
+<hr/>
+<h1 id="part-d-questions-16-20">Part D — Questions 16–20</h1>
+<hr/>
+<h1 id="16-distributed-message-queue-kafka-like">16. Distributed Message Queue (Kafka-like)</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="628" height="252" viewBox="0 0 628 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="628" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Producers</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Brokers (Partitions)</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Consumer Groups</text><rect x="234" y="166" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="314" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Replica Brokers</text><line x1="314" y1="96" x2="314" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a durable, scalable message queue/streaming platform that decouples producers from consumers.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Produce</strong> messages to a topic.</li>
+<li><strong>Consume</strong> messages from a topic (one or many independent consumers).</li>
+<li><strong>Durability:</strong> messages persist and aren't lost.</li>
+<li><strong>Ordering</strong> (at least within a partition).</li>
+<li><em>Out of scope:</em> stream processing/SQL layer.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>High throughput:</strong> millions of messages/sec.</li>
+<li><strong>Durability:</strong> persisted, replicated; survive broker failure.</li>
+<li><strong>Scalability:</strong> add brokers/partitions to grow.</li>
+<li><strong>Delivery semantics:</strong> at-least-once (configurable toward exactly-once).</li>
+<li><strong>Low latency</strong> for real-time consumers.</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Topic</strong> (a named stream), <strong>Partition</strong> (ordered, append-only log; unit of parallelism), <strong>Message/Record</strong> (<code>offset</code>, <code>key</code>, <code>value</code>, <code>timestamp</code>), <strong>Broker</strong> (server holding partitions), <strong>Consumer Group</strong> (set of consumers sharing a subscription), <strong>Offset</strong> (a consumer's position).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>produce(topic, key, value)          → appended to a partition
+subscribe(topic, consumerGroup)
+poll() → records
+commit(offset)                      → mark progress</pre>
+<h2>5. High-Level Design</h2>
+<pre>Producers → (partition by key) → Brokers [Partition = append-only log on disk]
+                                     │  replicated to follower brokers
+Consumers (in groups) → poll partitions → track offsets</pre>
+<ul>
+<li><strong>The log abstraction:</strong> each partition is an <strong>append-only, ordered log</strong> persisted to disk. Producers append; consumers read sequentially by <strong>offset</strong>. Retention keeps messages for a configured time (enabling replay).</li>
+<li><strong>Partitioning</strong> gives parallelism and ordering-within-partition; <strong>consumer groups</strong> split partitions among consumers (queue-like) while different groups each get all messages (pub/sub).</li>
+<li><strong>Replication</strong> across brokers gives durability and failover.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Durability &amp; replication:</strong> each partition has a <strong>leader</strong> + follower replicas. Producers write to the leader; followers replicate. A write is acknowledged after reaching the leader (and optionally a quorum of replicas — tunable <code>acks</code>). On leader failure, a follower is promoted (in-sync replica set).</li>
+<li><strong>Ordering:</strong> guaranteed <strong>within a partition</strong> only. To keep related messages ordered, produce them with the same <strong>key</strong> (same key → same partition). Global ordering across partitions isn't provided (it would kill scalability).</li>
+<li><strong>Delivery semantics:</strong> at-least-once (consumer commits offset after processing → crash before commit = reprocessing); exactly-once via idempotent producers + transactional writes. Consumers should be <strong>idempotent</strong>.</li>
+<li><strong>High throughput tricks:</strong> sequential disk I/O (append-only log is fast), zero-copy transfer, batching, and compression.</li>
+<li><strong>Scaling:</strong> add partitions for more parallelism (but repartitioning changes key→partition mapping); add brokers to spread partitions. Offsets stored durably (in a special topic).</li>
+<li><strong>Backpressure/retention:</strong> consumers read at their own pace; slow consumers just lag (bounded by retention), not block producers.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Ordering vs scalability:</strong> ordering only within a partition is the price of horizontal scale; global ordering would serialize everything.</li>
+<li><strong>Latency vs durability (acks):</strong> <code>acks=all</code> (wait for replicas) is durable but slower; <code>acks=1</code> is faster but can lose data on leader failure.</li>
+<li><strong>At-least-once vs exactly-once:</strong> exactly-once adds overhead/complexity; at-least-once + idempotent consumers is the common pragmatic choice.</li>
+<li><strong>Retention (storage) vs replay ability:</strong> longer retention enables replay/new consumers but costs disk.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> managed MSK/Kinesis reduces broker ops; CloudWatch on consumer lag, throughput, under-replicated partitions; IaC.</li>
+<li><strong>Security:</strong> TLS + SASL/IAM auth; encryption at rest; ACLs per topic; VPC isolation; least-privilege.</li>
+<li><strong>Reliability:</strong> replication across AZs + ISR; leader failover; durable persisted offsets; no message loss with <code>acks=all</code>.</li>
+<li><strong>Performance Efficiency:</strong> partition-level parallelism; sequential I/O + batching; scale partitions/brokers to load.</li>
+<li><strong>Cost Optimization:</strong> right-size retention and partitions; tiered storage for older log segments; scale brokers to throughput.</li>
+<li><strong>Sustainability:</strong> efficient sequential I/O and batching; retention tuned to need (avoid storing unused data); autoscale to real throughput.</li>
+</ul>
+<hr/>
+<h1 id="17-leaderboard-ranking-system">17. Leaderboard / Ranking System</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="628" height="252" viewBox="0 0 628 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="628" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Leaderboard Service</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Redis Sorted Set</text><rect x="234" y="166" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="314" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Durable DB (scores)</text><line x1="314" y1="96" x2="314" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a real-time leaderboard showing top players (and a player's rank) for a game with millions of players.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Update a player's score.</strong></li>
+<li><strong>Get top-K</strong> players.</li>
+<li><strong>Get a player's rank</strong> (and nearby players).</li>
+<li><strong>Time-based boards</strong> (daily/weekly) (mention).</li>
+<li><em>Out of scope:</em> anti-cheat, matchmaking.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Low latency</strong> reads/writes (real-time updates).</li>
+<li><strong>Scale:</strong> millions of players; frequent score updates.</li>
+<li><strong>Accuracy:</strong> ranks should be correct/consistent.</li>
+<li><strong>High availability.</strong></li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Player</strong> (<code>playerId</code>, <code>name</code>), <strong>Score</strong> (<code>playerId</code>, <code>score</code>, <code>updatedAt</code>), <strong>Leaderboard</strong> (a ranked set, possibly per-time-window/region).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>POST /scores            → { playerId, score } (update)
+GET  /leaderboard/top?k= → top-K players
+GET  /leaderboard/rank/{playerId} → rank + surrounding players</pre>
+<h2>5. High-Level Design</h2>
+<pre>Client → Leaderboard Service → Redis Sorted Set (ZADD/ZREVRANGE/ZRANK)
+                                     │
+                                     └→ Durable DB (source of truth for scores)</pre>
+<ul>
+<li><strong>Redis Sorted Set (ZSET)</strong> is the ideal primitive: it keeps members ordered by score with O(log N) inserts and O(log N + K) range reads.</li>
+<li><code>ZADD board score player</code> → update score.</li>
+<li><code>ZREVRANGE board 0 K-1</code> → top-K.</li>
+<li><code>ZREVRANK board player</code> → a player's rank.</li>
+<li>Persist scores to a <strong>durable DB</strong> as the source of truth; Redis serves the fast ranking.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Why sorted sets:</strong> they solve top-K and rank queries in log time — a relational <code>ORDER BY score</code> + <code>COUNT</code> for rank is O(N) and far too slow at scale. This data-structure choice <em>is</em> the design.</li>
+<li><strong>Scaling beyond one node:</strong> a huge leaderboard may exceed one Redis node.</li>
+<li><em>Sharding:</em> partition players across shards, keep per-shard top-K, and merge for the global top-K. Global exact <strong>rank</strong> across shards is harder → approximate (bucketed) rank, or a two-level structure.</li>
+<li><em>Replication</em> for read scaling/availability.</li>
+<li><strong>Time-based boards:</strong> separate sorted sets per window (daily/weekly) with TTL; roll over at boundaries.</li>
+<li><strong>Consistency &amp; durability:</strong> Redis is fast but volatile → write scores to a durable store too; on Redis failure, rebuild the sorted set from the DB.</li>
+<li><strong>Hot updates:</strong> extremely frequent updates for top players → batching/throttling; Redis handles high write rates well.</li>
+<li><strong>Rank of a specific player at massive scale:</strong> exact rank is expensive when sharded → use <strong>percentile/bucketed rank</strong> approximations for "you're in the top 5%".</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Redis (in-memory) vs durable DB alone:</strong> Redis gives the needed latency but is volatile → pair with a durable store (extra write). Correct trade for real-time ranking.</li>
+<li><strong>Exact vs approximate rank at scale:</strong> exact global rank across shards is costly; approximate rank is fast and usually good enough.</li>
+<li><strong>Single node (simple, exact) vs sharded (scalable, approximate):</strong> choose based on player count.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> ElastiCache (Redis) managed; CloudWatch on update/read latency; DB as recoverable source of truth; IaC.</li>
+<li><strong>Security:</strong> authN on score submission (prevent spoofing); server-side score validation (anti-cheat hook); TLS; least-privilege.</li>
+<li><strong>Reliability:</strong> Redis multi-AZ replicas; rebuild sorted set from durable DB after failure; no single point of data loss.</li>
+<li><strong>Performance Efficiency:</strong> sorted sets for O(log N) ops; sharding for scale; replicas for read throughput.</li>
+<li><strong>Cost Optimization:</strong> in-memory only for the ranking structure (compact); durable DB for cold storage; right-size Redis; TTL time-based boards.</li>
+<li><strong>Sustainability:</strong> efficient data structures avoid O(N) scans; autoscale to player activity; expire old boards.</li>
+</ul>
+<hr/>
+<h1 id="18-payment-system-digital-wallet">18. Payment System / Digital Wallet</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="832" height="252" viewBox="0 0 832 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="832" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Payment Service</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Idempotency Check</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">ACID DB + Ledger</text><rect x="234" y="166" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Payment Gateway</text><line x1="314" y1="96" x2="314" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="418" y="166" width="160" height="56" rx="8" ry="8" fill="#7c3aed"/><text x="498" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Event Stream</text><line x1="314" y1="96" x2="498" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a system to process payments and manage account balances correctly, with no lost or duplicated money.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Make a payment / transfer</strong> between accounts.</li>
+<li><strong>Maintain balances</strong> accurately.</li>
+<li><strong>Transaction history / ledger.</strong></li>
+<li><strong>Idempotent</strong> payment requests (safe retries).</li>
+<li><em>Out of scope:</em> fraud ML, currency conversion details.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Strong consistency &amp; correctness:</strong> money must never be lost, created, or double-spent — the absolute priority.</li>
+<li><strong>Durability &amp; auditability:</strong> every transaction permanently recorded.</li>
+<li><strong>Exactly-once effect</strong> (via idempotency).</li>
+<li><strong>Availability</strong>, but <strong>correctness &gt; availability</strong> here.</li>
+<li><strong>Security/compliance</strong> (PCI-DSS).</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Account</strong> (<code>accountId</code>, <code>balance</code>), <strong>Transaction</strong> (<code>txnId</code>, <code>from</code>, <code>to</code>, <code>amount</code>, <code>status</code>, <code>idempotencyKey</code>), <strong>Ledger Entry</strong> (immutable double-entry records), <strong>Payment</strong> (external gateway interaction).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>POST /payments   → { fromAccount, toAccount, amount, idempotencyKey } → { txnId, status }
+GET  /payments/{txnId}
+GET  /accounts/{id}/transactions</pre>
+<h2>5. High-Level Design</h2>
+<pre>Client → Payment Service → (idempotency check) → ACID DB (accounts + double-entry ledger)
+                               │
+                               └→ External Payment Gateway (for card/bank rails)
+                               └→ Event stream (async: notifications, analytics, reconciliation)</pre>
+<ul>
+<li><strong>ACID transactions</strong> update balances and write <strong>ledger</strong> entries atomically (debit one account, credit another — double-entry) so the books always balance.</li>
+<li><strong>Idempotency keys</strong> ensure a retried request doesn't process twice.</li>
+<li><strong>Double-entry ledger</strong> (immutable append-only records) is the auditable source of truth; balances can be derived/validated from it.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Idempotency (critical):</strong> the client sends a unique <code>idempotencyKey</code>; the server records processed keys and returns the original result on retry → <strong>exactly-once effect</strong> despite network retries. Prevents double charges.</li>
+<li><strong>Consistency for balances:</strong> use an <strong>ACID database</strong> with transactions (and appropriate isolation) so concurrent transfers can't overspend. For distributed accounts/services, avoid unsafe dual writes — use the <strong>Saga pattern</strong> with compensating actions, or a transactional outbox, for cross-service payments.</li>
+<li><strong>Double-entry ledger:</strong> every transaction writes balanced debit/credit entries; the ledger is <strong>append-only and immutable</strong> (never update/delete) → full audit trail and easy reconciliation.</li>
+<li><strong>External gateway integration:</strong> calling card networks/banks is asynchronous and can fail/time out → track payment state machine (pending→authorized→captured→settled/failed); reconcile with the provider; retry safely (idempotent).</li>
+<li><strong>Exactly-once with external systems:</strong> combine idempotency keys, a state machine, and reconciliation jobs to detect/heal discrepancies.</li>
+<li><strong>Security/compliance:</strong> never store raw card data (tokenize via PCI-compliant vault); encrypt everything; strict access controls and audit logs.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Consistency vs availability/scale:</strong> payments choose <strong>strong consistency</strong> (ACID) over scale — correctness is non-negotiable. Scale reads (history) separately.</li>
+<li><strong>Sync vs async settlement:</strong> authorize synchronously for UX; settle asynchronously (with reconciliation) since external rails are slow.</li>
+<li><strong>Saga vs 2PC for distributed payments:</strong> 2PC's locking hurts availability; sagas (eventual consistency + compensation) are preferred, at the cost of more complex failure handling.</li>
+<li><strong>Ledger immutability (storage) vs simplicity:</strong> an append-only ledger costs storage but is essential for auditability/correctness.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> ACID DB (Aurora); reconciliation jobs; detailed audit logging; CloudWatch alarms on failed/stuck payments; game days; IaC.</li>
+<li><strong>Security:</strong> PCI-DSS scope minimization (tokenization/vault); encryption at rest/in transit; strict least-privilege + separation of duties; immutable audit logs; secrets in Secrets Manager. <strong>Highest-priority pillar here.</strong></li>
+<li><strong>Reliability:</strong> multi-AZ Aurora; idempotency prevents duplicates; sagas + reconciliation heal partial failures; durable ledger; defined RPO≈0.</li>
+<li><strong>Performance Efficiency:</strong> strong-consistency core kept lean; async offload of non-critical work (notifications, analytics); scale the read/history path with replicas/cache.</li>
+<li><strong>Cost Optimization:</strong> reserve strong-consistency resources only for the money path; async/batch the rest; right-size; avoid over-scaling the low-QPS write core.</li>
+<li><strong>Sustainability:</strong> efficient transactional core (no wasteful polling); async batching; right-sized durable storage; archive old ledger data to cold tiers.</li>
+</ul>
+<hr/>
+<h1 id="19-key-value-store-dynamodb-cassandra-like">19. Key-Value Store (DynamoDB / Cassandra-like)</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="628" height="252" viewBox="0 0 628 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="628" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Client</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#0891b2"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Coordinator Node</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Replica Nodes (N)</text><rect x="234" y="166" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="314" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Hash Ring</text><line x1="314" y1="96" x2="314" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a distributed, highly available key-value store that scales horizontally.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>put(key, value), get(key), delete(key).</strong></li>
+<li><strong>Horizontal scalability</strong> (add nodes for capacity/throughput).</li>
+<li><strong>High availability</strong> (survive node/AZ failures).</li>
+<li><strong>Tunable consistency.</strong></li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>High availability</strong> (often AP — always writable).</li>
+<li><strong>Scalability:</strong> near-linear with nodes.</li>
+<li><strong>Low latency</strong> at scale.</li>
+<li><strong>Durability:</strong> replicated, no data loss.</li>
+<li><strong>Partition tolerance</strong> (it's distributed).</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Key/Value pair</strong>, <strong>Node</strong> (owns partitions), <strong>Partition</strong> (key range/hash bucket), <strong>Replica</strong> (copy of a partition), <strong>Ring</strong> (consistent-hash topology), <strong>Version</strong> (vector clock / timestamp).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>put(key, value, [consistencyLevel])
+get(key, [consistencyLevel]) → value(s)
+delete(key)</pre>
+<h2>5. High-Level Design</h2>
+<pre>Client → (coordinator node) → consistent hash(key) → N replica nodes
+                                   write to W replicas / read from R replicas (quorum)</pre>
+<ul>
+<li><strong>Partitioning via consistent hashing</strong> distributes keys across nodes with minimal remapping when nodes change (virtual nodes for balance).</li>
+<li><strong>Replication:</strong> each key is stored on <strong>N</strong> nodes (the next N on the ring). </li>
+<li><strong>Tunable consistency via quorums:</strong> a write succeeds on <strong>W</strong> replicas, a read queries <strong>R</strong> replicas; if <strong>W + R &gt; N</strong>, reads see the latest write (strong-ish). Tune W/R for latency vs consistency.</li>
+<li><strong>Leaderless</strong> design (Dynamo-style): any replica can take writes → high availability.</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Consistent hashing + virtual nodes:</strong> even key distribution and smooth rebalancing when nodes join/leave (only ~1/N keys move). Foundational for horizontal scale.</li>
+<li><strong>Replication &amp; quorums (N/W/R):</strong> <code>W + R &gt; N</code> → strong consistency; <code>W + R ≤ N</code> → faster but eventually consistent. E.g., N=3, W=2, R=2 balances both. Availability: writes succeed as long as W replicas are up.</li>
+<li><strong>Conflict resolution:</strong> with leaderless writes, concurrent updates conflict → detect with <strong>vector clocks</strong> (or version numbers); resolve by last-write-wins or application merge (e.g., merge shopping carts). Read-repair and anti-entropy (Merkle trees) reconcile divergent replicas.</li>
+<li><strong>Handling failures:</strong> <strong>hinted handoff</strong> — if a replica is down, another node temporarily stores the write and forwards it later, preserving availability and durability.</li>
+<li><strong>Storage engine:</strong> LSM-tree (memtable + SSTables + commit log) for high write throughput (Cassandra) — sequential writes, background compaction.</li>
+<li><strong>Gossip protocol:</strong> nodes share membership/health info peer-to-peer (no central coordinator) → decentralized, no SPOF.</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Consistency vs availability/latency (CAP/PACELC):</strong> tunable via N/W/R — the core trade. AP by default (available, eventually consistent); can lean CP with higher quorums.</li>
+<li><strong>Leaderless (highly available, conflict resolution needed) vs leader-based (simpler consistency, failover downtime).</strong></li>
+<li><strong>LWW (simple, may lose writes) vs vector clocks (accurate, complex).</strong></li>
+<li><strong>Read-repair/anti-entropy overhead</strong> vs consistency — background reconciliation costs resources.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> DynamoDB (fully managed) removes most ops; CloudWatch on latency, throttling, replication; IaC. (Cassandra self-managed = more ops via Keyspaces alternative.)</li>
+<li><strong>Security:</strong> encryption at rest/in transit; fine-grained IAM; VPC endpoints; least-privilege.</li>
+<li><strong>Reliability:</strong> replication across AZs/regions (global tables); leaderless design + hinted handoff = high availability; no SPOF (gossip, no central master); tunable durability.</li>
+<li><strong>Performance Efficiency:</strong> consistent hashing for even load; LSM for write-heavy workloads; quorum tuning for latency; single-digit-ms reads.</li>
+<li><strong>Cost Optimization:</strong> on-demand/auto-scaling capacity; tiered storage; tune replication factor to durability needs; avoid over-replication.</li>
+<li><strong>Sustainability:</strong> near-linear scaling avoids over-provisioning; efficient LSM writes; autoscale to demand; multi-tenant managed service improves utilization.</li>
+</ul>
+<hr/>
+<h1 id="20-doordash-food-delivery">20. DoorDash / Food Delivery</h1>
+<figure class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="1036" height="252" viewBox="0 0 1036 252"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs><rect x="0" y="0" width="1036" height="252" fill="#ffffff"/><rect x="30" y="40" width="160" height="56" rx="8" ry="8" fill="#2563eb"/><text x="110" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Customer</text><line x1="190" y1="68" x2="226" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="234" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="314" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Order Service</text><line x1="394" y1="68" x2="430" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="438" y="40" width="160" height="56" rx="8" ry="8" fill="#d97706"/><text x="518" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Order DB</text><line x1="598" y1="68" x2="634" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="642" y="40" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="722" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Dispatch Service</text><line x1="802" y1="68" x2="838" y2="68" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="846" y="40" width="160" height="56" rx="8" ry="8" fill="#059669"/><text x="926" y="72" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Driver Index (Redis)</text><rect x="234" y="166" width="160" height="56" rx="8" ry="8" fill="#7c3aed"/><text x="314" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Events (Kafka)</text><line x1="314" y1="96" x2="314" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/><rect x="30" y="166" width="160" height="56" rx="8" ry="8" fill="#475569"/><text x="110" y="198" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Restaurant Service</text><line x1="110" y1="96" x2="110" y2="158" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/></svg><figcaption>Architecture overview</figcaption></figure>
+<p><strong>Problem:</strong> Design a food-delivery platform connecting customers, restaurants, and delivery drivers.</p>
+<h2>1. Functional Requirements</h2>
+<ul>
+<li><strong>Browse restaurants/menus</strong> near the customer.</li>
+<li><strong>Place an order.</strong></li>
+<li><strong>Restaurant accepts &amp; prepares.</strong></li>
+<li><strong>Match a driver</strong> to pick up and deliver.</li>
+<li><strong>Real-time tracking</strong> of the order/driver.</li>
+<li><em>Out of scope:</em> payments (Q18), reviews.</li>
+</ul>
+<h2>2. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Three-sided marketplace</strong> (customers, restaurants, drivers) — all real-time.</li>
+<li><strong>Geospatial:</strong> nearby restaurants and driver matching.</li>
+<li><strong>Low latency</strong> browsing + real-time tracking.</li>
+<li><strong>Reliability:</strong> orders must not be lost; consistent order state.</li>
+<li><strong>Scale:</strong> millions of orders/day, spiky (meal times).</li>
+</ul>
+<h2>3. Core Entities</h2>
+<ul>
+<li><strong>Customer, Restaurant</strong> (<code>id</code>, <code>location</code>, <code>menu</code>, <code>status</code>), <strong>Order</strong> (<code>orderId</code>, <code>items</code>, <code>status</code>, <code>customerId</code>, <code>restaurantId</code>, <code>driverId</code>), <strong>Driver</strong> (<code>id</code>, <code>location</code>, <code>status</code>), <strong>Delivery</strong> (pickup→dropoff).</li>
+</ul>
+<h2>4. The API</h2>
+<pre>GET  /restaurants?near=lat,lng      → nearby restaurants
+POST /orders                        → { restaurantId, items } → { orderId }
+PATCH /orders/{id}/status           → restaurant/driver update state
+POST /drivers/location              → driver location pings
+WebSocket                           → live order/driver tracking</pre>
+<h2>5. High-Level Design</h2>
+<pre>Browse:   Client → Restaurant Service → Geospatial index (nearby) + Menu DB (+ cache/CDN)
+Order:    Client → Order Service → Order DB (state machine) → notify restaurant
+Dispatch: Order → Dispatch/Matching Service → Driver location index → assign driver
+Track:    All parties ⇄ WebSocket gateway ⇄ live location/status updates</pre>
+<ul>
+<li><strong>Order as a state machine:</strong> placed → accepted → preparing → ready → picked-up → delivered. The <strong>Order Service</strong> owns this lifecycle reliably.</li>
+<li><strong>Geospatial</strong> powers both nearby-restaurant browsing and driver matching (like Uber, Q10).</li>
+<li><strong>Real-time tracking</strong> over WebSockets to customer, restaurant, and driver.</li>
+<li><strong>Async events</strong> (Kafka) coordinate the three parties and downstream work (notifications, ETAs, analytics).</li>
+</ul>
+<h2>6. Potential Deep Dives</h2>
+<ul>
+<li><strong>Driver matching &amp; dispatch:</strong> find available drivers near the restaurant (geospatial index), optimize assignment (proximity, current load, batching multiple orders on one route). This is a real-time optimization problem; start with nearest-available, evolve to batched routing.</li>
+<li><strong>Order state consistency:</strong> the order lifecycle must be reliable and consistent across three parties → an authoritative Order Service with a clear state machine; use events to propagate transitions; idempotent updates (retries mustn't skip/duplicate states).</li>
+<li><strong>Geospatial at scale:</strong> geohash/quadtree for restaurants (mostly static) and drivers (high-frequency updates → in-memory like Uber). Shard by region/city (natural geo-partitioning).</li>
+<li><strong>ETA prediction:</strong> combine prep time + driver travel time (traffic) → ML/heuristics; update in real time.</li>
+<li><strong>Spiky load:</strong> lunch/dinner peaks → autoscale; queue order events to absorb bursts; cache menus/restaurant data (CDN) since browsing dominates reads.</li>
+<li><strong>Real-time connections:</strong> WebSocket gateway + session registry (like chat, Q5).</li>
+</ul>
+<h2>7. Trade-offs</h2>
+<ul>
+<li><strong>Strong consistency for order state vs eventual for tracking:</strong> order lifecycle needs consistency (don't lose/duplicate orders); live location can be eventually consistent/best-effort.</li>
+<li><strong>Matching optimality vs latency:</strong> globally optimal dispatch (batching, routing) is expensive; a fast nearest-driver match is responsive — evolve from simple to optimized.</li>
+<li><strong>Monolith vs microservices:</strong> three-sided domain naturally splits (restaurant, order, dispatch, driver services) — but adds distributed complexity; justified at this scale.</li>
+<li><strong>Caching menus (stale risk) vs freshness:</strong> cache heavily for browse performance, invalidate on menu/price changes.</li>
+</ul>
+<h2>AWS Well-Architected Assessment</h2>
+<ul>
+<li><strong>Operational Excellence:</strong> microservices with clear ownership; Kafka/MSK for event coordination; CloudWatch on order latency, match time, delivery SLAs; IaC; regional deploys.</li>
+<li><strong>Security:</strong> authN/authZ per party (customer/restaurant/driver); protect location/PII; least-privilege; secure payment handoff (Q18); audit order changes.</li>
+<li><strong>Reliability:</strong> durable Order DB + event log; idempotent state transitions; multi-AZ; regional isolation limits outage blast radius; graceful degradation (stale ETAs if traffic stream lags).</li>
+<li><strong>Performance Efficiency:</strong> geospatial indexes; in-memory driver locations; CDN/cache for menus; async events for coordination; WebSockets for tracking.</li>
+<li><strong>Cost Optimization:</strong> autoscale to meal-time peaks then down; cache-heavy browse path; in-memory only for ephemeral driver location; Spot for batch/analytics.</li>
+<li><strong>Sustainability:</strong> geo-partitioning avoids global scans; batched deliveries cut driver miles; autoscaling to demand peaks; caching reduces recompute; efficient location pings.</li>
+</ul>
+<hr/>
+<h2>Closing note</h2>
+<p>Every design above used the same discipline: <strong>clarify requirements → size the system → model the data → define the API → design the architecture → deep-dive the hard parts → own the trade-offs → validate against the AWS Well-Architected pillars.</strong> In an interview, this <em>process</em> — not any single "right" diagram — is what demonstrates senior-level system design skill. Adapt the depth to the time available, and always tie decisions back to the stated requirements.</p></body></html>

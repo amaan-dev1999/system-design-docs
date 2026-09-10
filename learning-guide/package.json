@@ -1,0 +1,9 @@
+{
+  "name": "system-design-learning-docx",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Builds a Word .docx from the system design learning markdown files using only Node built-ins (no dependencies).",
+  "scripts": {
+    "build": "node build-docx.js"
+  }
+}
