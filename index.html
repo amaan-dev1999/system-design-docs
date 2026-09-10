@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>System Design Docs — Interview Guide & Learning Guide</title>
+    <meta
+      name="description"
+      content="Top 20 system design interview questions (7-step framework + AWS Well-Architected review) and a 100-question learning guide. Available as PDF, Word, and HTML."
+    />
+    <style>
+      :root {
+        --navy: #14375a;
+        --blue: #1f4e79;
+        --teal: #0891b2;
+        --amber: #d97706;
+        --green: #059669;
+        --purple: #7c3aed;
+        --ink: #1a1a1a;
+        --muted: #5b6673;
+        --bg: #f6f8fb;
+        --card: #ffffff;
+        --border: #e2e8f0;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+        line-height: 1.6;
+      }
+      a { color: var(--blue); }
+      .hero {
+        background: linear-gradient(135deg, #14375a 0%, #1f4e79 55%, #0891b2 100%);
+        color: #fff;
+        padding: 64px 24px 56px;
+        text-align: center;
+      }
+      .hero h1 { font-size: 2.6rem; margin: 0 0 10px; letter-spacing: 0.3px; }
+      .hero p { font-size: 1.12rem; margin: 6px auto; max-width: 760px; opacity: 0.95; }
+      .badges { margin-top: 18px; }
+      .badges img { margin: 0 4px; vertical-align: middle; }
+      .wrap { max-width: 1040px; margin: 0 auto; padding: 40px 24px 64px; }
+      .section-title { font-size: 1.5rem; color: var(--navy); margin: 8px 0 18px; }
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 22px;
+        box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(16, 24, 40, 0.1); }
+      .card h3 { margin: 0 0 6px; color: var(--navy); font-size: 1.15rem; }
+      .card .fmt { font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+      .card p { color: var(--muted); font-size: 0.96rem; margin: 10px 0 16px; }
+      .btn {
+        display: inline-block;
+        background: var(--blue);
+        color: #fff;
+        text-decoration: none;
+        padding: 9px 16px;
+        border-radius: 8px;
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+      .btn.secondary { background: #eef3f8; color: var(--blue); }
+      .btn + .btn { margin-left: 8px; }
+      .divider { height: 1px; background: var(--border); margin: 44px 0; border: 0; }
+      .systems { columns: 2; column-gap: 28px; }
+      .systems li { margin: 4px 0; break-inside: avoid; }
+      .steps { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+      .chip {
+        background: #eef3f8; color: var(--blue);
+        border: 1px solid #d7e3ef; border-radius: 999px;
+        padding: 5px 12px; font-size: 0.85rem; font-weight: 600;
+      }
+      footer { text-align: center; color: var(--muted); padding: 28px; font-size: 0.9rem; }
+      @media (max-width: 560px) { .hero h1 { font-size: 2rem; } .systems { columns: 1; } }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <h1>System Design Docs</h1>
+      <p>
+        Top 20 system design interview questions worked through a consistent
+        7-step framework, each reviewed against the AWS Well-Architected
+        Framework — plus a 100-question in-depth learning guide.
+      </p>
+      <p>Available as <strong>PDF</strong>, <strong>Word</strong>, and <strong>HTML</strong>.</p>
+      <div class="badges">
+        <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" />
+        <img src="https://img.shields.io/badge/format-PDF%20%7C%20DOCX%20%7C%20HTML-14375a" alt="Formats" />
+        <img src="https://img.shields.io/badge/questions-120%2B-059669" alt="120+ questions" />
+      </div>
+    </header>
+
+    <main class="wrap">
+      <h2 class="section-title">📘 Interview Guide — Top 20 Systems</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="fmt">HTML · View online</div>
+          <h3>Read in the browser</h3>
+          <p>The full interview guide with architecture diagrams, rendered as a web page.</p>
+          <a class="btn" href="interview-questions/System-Design-Interviews-Top20.html">Open guide →</a>
+        </div>
+        <div class="card">
+          <div class="fmt">PDF · Download</div>
+          <h3>Print-ready PDF</h3>
+          <p>Clickable table of contents and crisp vector architecture diagrams.</p>
+          <a class="btn" href="interview-questions/System-Design-Interviews-Top20.pdf">Download PDF →</a>
+        </div>
+        <div class="card">
+          <div class="fmt">Word · Download</div>
+          <h3>Editable Word doc</h3>
+          <p>Table of contents plus embedded diagram images.</p>
+          <a class="btn" href="interview-questions/System-Design-Interviews-Top20.docx">Download DOCX →</a>
+        </div>
+      </div>
+
+      <div class="steps">
+        <span class="chip">Functional Requirements</span>
+        <span class="chip">Non-Functional Requirements</span>
+        <span class="chip">Core Entities</span>
+        <span class="chip">API</span>
+        <span class="chip">High-Level Design</span>
+        <span class="chip">Deep Dives</span>
+        <span class="chip">Trade-offs</span>
+        <span class="chip">AWS Well-Architected (6 pillars)</span>
+      </div>
+
+      <hr class="divider" />
+
+      <h2 class="section-title">📗 Learning Guide — 100 Questions</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="fmt">Word · Download</div>
+          <h3>In-depth study guide</h3>
+          <p>
+            Fundamentals, components, databases, scalability &amp; growth stages,
+            and reliability — 100 well-explained Q&amp;A.
+          </p>
+          <a class="btn" href="learning-guide/System-Design-Learning.docx">Download DOCX →</a>
+          <a class="btn secondary" href="learning-guide/README.md">Read source →</a>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <h2 class="section-title">Systems covered in the interview guide</h2>
+      <ul class="systems">
+        <li>1. URL Shortener (TinyURL)</li>
+        <li>2. Pastebin</li>
+        <li>3. Twitter / News Feed</li>
+        <li>4. Instagram</li>
+        <li>5. WhatsApp / Chat</li>
+        <li>6. Rate Limiter</li>
+        <li>7. YouTube / Netflix</li>
+        <li>8. Web Crawler</li>
+        <li>9. Notification System</li>
+        <li>10. Uber / Ride-Sharing</li>
+        <li>11. Google Drive / Dropbox</li>
+        <li>12. Ticketmaster</li>
+        <li>13. Distributed Cache</li>
+        <li>14. Search Autocomplete</li>
+        <li>15. Google Maps</li>
+        <li>16. Distributed Message Queue</li>
+        <li>17. Leaderboard</li>
+        <li>18. Payment System</li>
+        <li>19. Key-Value Store</li>
+        <li>20. DoorDash / Food Delivery</li>
+      </ul>
+    </main>
+
+    <footer>
+      Built with zero-dependency Node.js generators · Licensed under MIT ·
+      <a href="https://github.com/amaan-dev1999/system-design-docs">View on GitHub</a>
+    </footer>
+  </body>
+</html>

@@ -1,6 +1,22 @@
 # System Design Docs
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Formats](https://img.shields.io/badge/format-PDF%20%7C%20DOCX%20%7C%20HTML-14375a)
+![Questions](https://img.shields.io/badge/questions-120%2B-059669)
+[![Pages](https://img.shields.io/badge/GitHub%20Pages-live-2e5f8a)](https://amaan-dev1999.github.io/system-design-docs/)
+
 A personal collection of system design study material and interview preparation documents, available in multiple formats (PDF, Word, HTML) with reproducible source.
+
+> 🌐 **Live site:** https://amaan-dev1999.github.io/system-design-docs/
+
+## ⬇️ Quick downloads
+
+| Document | View / Download |
+|----------|-----------------|
+| Interview Guide — Top 20 (HTML) | [Open online](https://amaan-dev1999.github.io/system-design-docs/interview-questions/System-Design-Interviews-Top20.html) |
+| Interview Guide — Top 20 (PDF) | [Download](interview-questions/System-Design-Interviews-Top20.pdf) |
+| Interview Guide — Top 20 (Word) | [Download](interview-questions/System-Design-Interviews-Top20.docx) |
+| Learning Guide — 100 Questions (Word) | [Download](learning-guide/System-Design-Learning.docx) |
 
 ## Contents
 
@@ -38,4 +54,10 @@ node build-docx.js   # -> .docx
 ```
 
 ## License
-Personal study material.
+Released under the [MIT License](LICENSE).
+
+## GitHub Pages
+This repo publishes a landing page (`index.html`) via GitHub Pages using the workflow in
+`.github/workflows/pages.yml`. On each push to `main`, the site is rebuilt and deployed to
+https://amaan-dev1999.github.io/system-design-docs/. If Pages is not yet active, enable it once under
+**Settings → Pages → Build and deployment → Source: GitHub Actions**.
