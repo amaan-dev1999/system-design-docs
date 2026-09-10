@@ -57,7 +57,8 @@ node build-docx.js   # -> .docx
 Released under the [MIT License](LICENSE).
 
 ## GitHub Pages
-This repo publishes a landing page (`index.html`) via GitHub Pages using the workflow in
-`.github/workflows/pages.yml`. On each push to `main`, the site is rebuilt and deployed to
-https://amaan-dev1999.github.io/system-design-docs/. If Pages is not yet active, enable it once under
-**Settings → Pages → Build and deployment → Source: GitHub Actions**.
+This repo serves a landing page (`index.html`) via GitHub Pages using the **Deploy from a branch** method.
+Enable it once: **Settings → Pages → Build and deployment → Source: Deploy from a branch →
+Branch: `main` / `/ (root)` → Save**. The site publishes at
+https://amaan-dev1999.github.io/system-design-docs/ and rebuilds automatically on every push to `main`.
+A `.nojekyll` file is included so all folders and files are served exactly as committed.
